@@ -1,11 +1,11 @@
 package net.gbmb.xemph;
 
+import javax.xml.namespace.QName;
+
 /**
  * Created by Guillaume Bailleul on 18/10/2016.
  */
 public class Name {
-
-    public static final Name XmlLang = new Name(Namespaces.XML,"lang");
 
     private String namespace; // URI
 
@@ -15,6 +15,11 @@ public class Name {
         this.namespace = namespace;
         this.localName = localName;
     }
+
+    public Name(QName qn) {
+        this(qn.getNamespaceURI(),qn.getLocalPart());
+    }
+
 
     public String getNamespace() {
         return namespace;
@@ -43,4 +48,16 @@ public class Name {
         result = 31 * result + localName.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "'"+namespace+"':'"+localName+"'";
+    }
+
+
+    public static class Q {
+
+        public static final QName XML_LANG = new QName(Namespaces.XML,"lang");
+    }
+
 }

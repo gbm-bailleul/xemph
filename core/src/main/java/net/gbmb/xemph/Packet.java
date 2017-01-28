@@ -21,6 +21,14 @@ public class Packet {
         return properties;
     }
 
+    public String getTargetResource() {
+        return targetResource;
+    }
+
+    public void setTargetResource(String targetResource) {
+        this.targetResource = targetResource;
+    }
+
     public void addProperty (Name name, Value value, boolean replace) {
         if (!replace) {
             // cannot add property if name is already used

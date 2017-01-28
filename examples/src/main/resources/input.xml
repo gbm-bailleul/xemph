@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xe="http://ns.adobe.com/xmp-example/" xmlns:xmpTPg="http://ns.adobe.com/xap/1.0/t/pg/" xmlns:stDim="http://ns.adobe.com/xap/1.0/sType/Dimensions#">
+    <rdf:Description rdf:about="">
+        <xmp:BaseURL>http://www.adobe.com/</xmp:BaseURL>
+        <dc:subject>
+            <rdf:Bag>
+                <rdf:li>XMP</rdf:li>
+                <rdf:li>metadata</rdf:li>
+                <rdf:li>ISO Standard</rdf:li>
+            </rdf:Bag>
+        </dc:subject>
+        <dc:title>
+            <rdf:Seq>
+                <rdf:li>seq elem 1</rdf:li>
+                <rdf:li>seq elem 2</rdf:li>
+                <rdf:li>seq elem 3</rdf:li>
+                <rdf:li>seq elem 4</rdf:li>
+            </rdf:Seq>
+        </dc:title>
+        <dc:Example>
+            <rdf:Alt>
+                <rdf:li xml:lang="fr-fr">titre français</rdf:li>
+                <rdf:li xml:lang="en-us">english title</rdf:li>
+            </rdf:Alt>
+        </dc:Example>
+        <dc:source>
+            <rdf:Description>
+                <rdf:value>Adobe XMP Specification</rdf:value>
+                <xe:qualifier>artificial example</xe:qualifier>
+                <xe:qualifier2>artificial example</xe:qualifier2>
+            </rdf:Description>
+        </dc:source>
+        <dc:source2>
+            <rdf:Description>
+                <xe:qualifier>artificial example</xe:qualifier>
+                <rdf:value>Adobe XMP Specification</rdf:value>
+            </rdf:Description>
+        </dc:source2>
+        <xmpTPg:MaxPageSize>
+            <rdf:Description>
+                <stDim:h>11.0</stDim:h>
+                <stDim:w>8.5</stDim:w>
+                <stDim:unit>inch</stDim:unit>
+            </rdf:Description>
+        </xmpTPg:MaxPageSize>
+               <dc:subject2>
+                   <rdf:Bag>
+                       <rdf:li>XMP</rdf:li>
+                       <rdf:li>
+                           <rdf:Description>
+                               <rdf:value>Metadata</rdf:value>
+                               <xe:qualifier>artificial example</xe:qualifier>
+                           </rdf:Description>
+                       </rdf:li>
+                   </rdf:Bag>
+               </dc:subject2>
+    </rdf:Description>
+</rdf:RDF>
