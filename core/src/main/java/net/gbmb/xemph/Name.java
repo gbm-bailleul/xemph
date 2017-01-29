@@ -31,13 +31,16 @@ public class Name {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         Name that = (Name) o;
 
         //noinspection SimplifiableIfStatement
-        if (!namespace.equals(that.namespace)) return false;
+        if (!namespace.equals(that.namespace))
+            return false;
         return localName.equals(that.localName);
 
     }
@@ -58,6 +61,12 @@ public class Name {
     public static class Q {
 
         public static final QName XML_LANG = new QName(Namespaces.XML,"lang");
+
+        public static final QName RDF_RDF = new QName(Namespaces.RDF,"RDF");
+
+        public static final QName RDF_DESCRIPTION = new QName(Namespaces.RDF,"Description");
+
+        private Q () {}
     }
 
 }

@@ -1,6 +1,5 @@
 package net.gbmb.xemph.xml;
 
-import com.sun.xml.internal.txw2.output.IndentingXMLStreamWriter;
 import net.gbmb.xemph.Name;
 import net.gbmb.xemph.Namespaces;
 import net.gbmb.xemph.values.*;
@@ -43,7 +42,6 @@ public class XmlWriter {
         try {
             XMLOutputFactory factory = XMLOutputFactory.newInstance();
             XMLStreamWriter writer = factory.createXMLStreamWriter(output);
-            writer = new IndentingXMLStreamWriter(writer); // TODO shall be an option
             // start document
             writer.writeStartDocument();
             writer.setPrefix("rdf", Namespaces.RDF);

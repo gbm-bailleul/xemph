@@ -35,20 +35,16 @@ public class XmlReader {
             XMLEvent event = reader.nextEvent();
             if (event.isStartElement()) {
                 StartElement se = event.asStartElement();
-                if (readState==State.OUT) {
+                if (readState==State.OUT && Name.Q.RDF_RDF.equals(se.getName())) {
                     // we enter RDF if element is rdf:RDF
-                    if (Namespaces.RDF.equals(se.getName().getNamespaceURI()) && "RDF".equals(se.getName().getLocalPart())) {
-                        readState = State.RDF;
-                        loadNamespaces(se,packet);
-                    }
-                } else if (readState==State.RDF) {
+                    readState = State.RDF;
+                    loadNamespaces(se,packet);
+                } else if (readState==State.RDF && Name.Q.RDF_DESCRIPTION.equals(se.getName())) {
                     // enters in Description if element if rdf:Description
-                    if (Namespaces.RDF.equals(se.getName().getNamespaceURI()) && "Description".equals(se.getName().getLocalPart())) {
-                        readState = State.DESCRIPTION;
-                        Attribute about = se.getAttributeByName(QName.valueOf("rdf:about"));
-                        if (about!=null) {
-                            packet.setTargetResource(about.getValue());
-                        }
+                    readState = State.DESCRIPTION;
+                    Attribute about = se.getAttributeByName(QName.valueOf("rdf:about"));
+                    if (about!=null) {
+                        packet.setTargetResource(about.getValue());
                     }
                 } else {
                     // should be property description
@@ -89,8 +85,7 @@ public class XmlReader {
                 throw new XMLStreamException("Unknown description namespace: "+sde.getName());
             }
         } else {
-            System.err.println(">>>>> TODO >>>> "+next);
-            System.err.flush();
+            throw new XMLStreamException("Unexpected item: "+next);
         }
 
 
@@ -125,7 +120,7 @@ public class XmlReader {
         ArrayValue<Value> array;
         if ("Seq".equals(se.getName().getLocalPart())) array = new OrderedArray<>();
         else if ("Bag".equals(se.getName().getLocalPart())) array = new UnorderedArray<>();
-        else if ("Alt".equals(se.getName().getLocalPart())) array = new AlternativeArray<>();
+        else if ("Alt".equals(se.getName().getLocalPart())) array = new AlternativeArray();
         else throw new XMLStreamException("Unknown array type: "+se.getName());
         // read the list
         XMLEvent next = nextToUse(reader);

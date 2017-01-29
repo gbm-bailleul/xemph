@@ -30,11 +30,9 @@ public class Packet {
     }
 
     public void addProperty (Name name, Value value, boolean replace) {
-        if (!replace) {
+        if (!replace && properties.containsKey(name)) {
             // cannot add property if name is already used
-            if (properties.containsKey(name)) {
-                throw new IllegalArgumentException("Cannot have two property with same name: "+name);
-            }
+            throw new IllegalArgumentException("Cannot have two property with same name: "+name);
         }
         // add or replace
         properties.put(name,value);
@@ -64,23 +62,22 @@ public class Packet {
     public Collection<String> listUsedNamespaces() {
         List<String> result = new ArrayList<>();
         // add properties namespaces
-        for (Name name:properties.keySet()) {
-            String ns = name.getNamespace();
+        for (Map.Entry<Name,Value> entry:properties.entrySet()) {
+            String ns = entry.getKey().getNamespace();
             if (!result.contains(ns)) {
                 result.add(ns);
             }
-            Value value = properties.get(name);
-            if (value instanceof Structure) {
+            if (entry.getValue() instanceof Structure) {
                 // add namespaces of structure fields
-                for (Name name1: ((Structure)value).getFields().keySet()) {
+                for (Name name1: ((Structure)entry.getValue()).getFields().keySet()) {
                     String ns1 = name1.getNamespace();
                     if (!result.contains(ns1)) {
                         result.add(ns1);
                     }
                 }
-            } else if (value instanceof ArrayValue) {
+            } else if (entry.getValue() instanceof ArrayValue) {
                 // add namespaces of qualifiers of each value
-                for (Value value1:((ArrayValue<? extends Value>)value).getItems()) {
+                for (Value value1:((ArrayValue<? extends Value>)entry.getValue()).getItems()) {
                     for (Name name1: value1.getQualifiers().keySet()) {
                         String ns1 = name1.getNamespace();
                         if (!result.contains(ns1)) {
@@ -90,7 +87,7 @@ public class Packet {
                 }
             }
             // add namespaces of value qualifiers
-            for (Name name1: value.getQualifiers().keySet()) {
+            for (Name name1: entry.getValue().getQualifiers().keySet()) {
                 String ns1 = name1.getNamespace();
                 if (!result.contains(ns1)) {
                     result.add(ns1);
