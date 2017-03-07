@@ -1,11 +1,14 @@
 package net.gbmb.xemph.examples;
 
 import net.gbmb.xemph.Name;
+import net.gbmb.xemph.Namespaces;
 import net.gbmb.xemph.Packet;
 import net.gbmb.xemph.Value;
+import net.gbmb.xemph.values.OrderedArray;
+import net.gbmb.xemph.values.SimpleValue;
+import net.gbmb.xemph.values.UnorderedArray;
 import net.gbmb.xemph.xml.XmlReader;
 
-import javax.xml.stream.events.Namespace;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -32,5 +35,16 @@ public class MainReader {
             System.out.println("     "+entry.getKey());
 
         }
+
+        OrderedArray<SimpleValue> value = (OrderedArray<SimpleValue>)packet.getProperty(Namespaces.DC,"title");
+        for (SimpleValue sv : value.getItems()) {
+            System.out.println(">> "+sv);
+        }
+//        System.out.println("aa "+((ParameterizedType)value.getItems().getGenericType()).getActualTypeArguments()[0]);
+
+        System.out.println(">>>>> "+value.getItem(2));
+
+//        System.out.println("> "+packet.getProperty(new Name(Namespaces.DC,"title"),OrderedArray.class));
+
     }
 }
