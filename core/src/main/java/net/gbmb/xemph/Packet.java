@@ -55,6 +55,15 @@ public class Packet {
         return properties.get(name);
     }
 
+    public Value getProperty (String namespace, String localName) {
+        return properties.get(new Name(namespace,localName));
+    }
+
+    // TODO keep or remove ?
+    public <R extends Value> R getProperty(Name name, Class<R> type) {
+        return type.cast(getProperty(name));
+    }
+
     public Namespaces getNamespaces() {
         return namespaces;
     }

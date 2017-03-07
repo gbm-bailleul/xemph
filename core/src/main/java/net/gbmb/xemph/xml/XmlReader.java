@@ -155,7 +155,6 @@ public class XmlReader {
         XMLEvent next = reader.nextEvent();
         if (reader.peek().isStartElement()) {
             // skip characters between two start elements
-            System.err.println("Skipping "+next);
             return reader.nextEvent();
         } else {
             return next;
