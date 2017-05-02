@@ -34,7 +34,7 @@ public abstract class Value {
         return qualifiers.get(name);
     }
 
-    public boolean hasQualifier(Name name) {
+    public boolean containsQualifier(Name name) {
         return qualifiers.containsKey(name);
     }
 

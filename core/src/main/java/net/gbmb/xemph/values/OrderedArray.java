@@ -8,9 +8,9 @@ import net.gbmb.xemph.Value;
 public class OrderedArray<T extends Value> extends ArrayValue<T> {
 
 
-    public Value getItem (int pos) {
+    public T getItem (int pos) {
         if (pos>=getItems().size()) {
-            throw new IllegalArgumentException(String.format("Array only contains %d elements, expecting pos %d",
+            throw new ArrayIndexOutOfBoundsException(String.format("Array only contains %d elements, expecting pos %d",
                     getItems().size(),
                     pos)
             );

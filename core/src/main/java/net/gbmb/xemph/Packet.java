@@ -30,6 +30,14 @@ public class Packet {
     }
 
     public void addProperty (Name name, Value value, boolean replace) {
+        // check name is not null
+        if (name==null) {
+            throw new IllegalArgumentException("Property name cannot be null");
+        }
+        // check value is not null
+        if (value==null) {
+            throw new IllegalArgumentException("Property value cannot be null");
+        }
         if (!replace && properties.containsKey(name)) {
             // cannot add property if name is already used
             throw new IllegalArgumentException("Cannot have two property with same name: "+name);
@@ -45,6 +53,10 @@ public class Packet {
 
     public void addProperty (Name name, String value) {
         addProperty(name,new SimpleValue(value));
+    }
+
+    public void addProperty (Name name, String value, boolean replace) {
+        addProperty(name,new SimpleValue(value),replace);
     }
 
     public Collection<Name> getPropertiesNames () {
