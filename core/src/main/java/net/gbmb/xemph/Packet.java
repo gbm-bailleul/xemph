@@ -51,17 +51,21 @@ public class Packet {
         return properties.keySet();
     }
 
-    public Value getProperty (Name name) {
+    public Value getValue(Name name) {
         return properties.get(name);
     }
 
-    public Value getProperty (String namespace, String localName) {
-        return properties.get(new Name(namespace,localName));
+    public Value getValue(String namespace, String localName) {
+        return getValue(new Name(namespace,localName));
     }
 
     // TODO keep or remove ?
-    public <R extends Value> R getProperty(Name name, Class<R> type) {
-        return type.cast(getProperty(name));
+    public <R extends Value> R getValue(Name name, Class<R> type) {
+        return type.cast(getValue(name));
+    }
+
+    public boolean contains (Name name) {
+        return properties.containsKey(name);
     }
 
     public Namespaces getNamespaces() {

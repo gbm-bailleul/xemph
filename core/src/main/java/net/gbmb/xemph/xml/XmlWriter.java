@@ -78,7 +78,7 @@ public class XmlWriter {
                 writer.writeAttribute(Namespaces.RDF,"about",""); // TODO where to find about value
             }
             // the value
-            Value value = packet.getProperty(name);
+            Value value = packet.getValue(name);
             if (value instanceof SimpleValue) {
                 writeSimpleValue(name, (SimpleValue) value, writer);
             } else if (value instanceof Structure) {

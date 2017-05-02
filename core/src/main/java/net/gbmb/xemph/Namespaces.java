@@ -1,5 +1,7 @@
 package net.gbmb.xemph;
 
+import net.gbmb.xemph.namespaces.DublinCore;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,8 +20,6 @@ public class Namespaces {
 
     public static final String ST_DIM = "http://ns.adobe.com/xap/1.0/sType/Dimensions#";
 
-    public static final String DC = "http://purl.org/dc/elements/1.1/";
-
     private Map<String,String> namespaceToPrefix = new HashMap<>();
 
     private Map<String,String> prefixToNamespace = new HashMap<>();
@@ -29,11 +29,15 @@ public class Namespaces {
         prefixToNamespace.put("xmp",XMP);
         prefixToNamespace.put("xmpTPg",XMP_TPG);
         prefixToNamespace.put("stDim",ST_DIM);
-        prefixToNamespace.put("dc",DC);
+        addNamespace(new DublinCore());
         // load revert map
         for (Map.Entry<String,String> entry:prefixToNamespace.entrySet()) {
             namespaceToPrefix.put(entry.getValue(),entry.getKey());
         }
+    }
+
+    private void addNamespace (Namespace ns) {
+        prefixToNamespace.put(ns.getDefaultPrefix(),ns.getNamespaceURI());
     }
 
     public String getNamespaceFor (String prefix) {
