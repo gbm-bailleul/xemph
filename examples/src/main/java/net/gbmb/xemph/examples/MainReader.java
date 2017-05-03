@@ -4,6 +4,8 @@ import net.gbmb.xemph.Name;
 import net.gbmb.xemph.Packet;
 import net.gbmb.xemph.Value;
 import net.gbmb.xemph.namespaces.DublinCore;
+import net.gbmb.xemph.values.AlternativeArray;
+import net.gbmb.xemph.values.SimpleValue;
 import net.gbmb.xemph.xml.XmlReader;
 
 import java.io.InputStream;
@@ -29,13 +31,17 @@ public class MainReader {
         }
         System.out.println("Properties");
         for (Map.Entry<Name,Value> entry: packet.getProperties().entrySet()) {
-            System.out.println("     "+entry.getKey());
+            System.out.println("     "+entry.getKey()+ " / "+entry.getValue().getClass());
 
         }
 
-        DublinCore dc = new DublinCore();
-        System.out.println("> "+packet.contains(dc.TITLE));
-        System.out.println("> "+packet.getValue(dc.TITLE));
+        System.out.println("> "+packet.contains(DublinCore.TITLE));
+        System.out.println("> "+packet.getValue(DublinCore.TITLE));
+
+
+        AlternativeArray<SimpleValue> aa = packet.getValue(new Name(DublinCore.NAMESPACE_URI,"Example"),AlternativeArray.class);
+
+        System.out.println("example fr: "+ aa.getValue("fr-fr"));
 
 
 //        OrderedArray<SimpleValue> value = (OrderedArray<SimpleValue>)packet.getValue(dc.title());

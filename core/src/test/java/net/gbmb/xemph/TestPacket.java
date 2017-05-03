@@ -1,8 +1,5 @@
 package net.gbmb.xemph;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
-import junit.framework.TestCase;
-import net.gbmb.xemph.values.SimpleValue;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -19,6 +19,6 @@ public class SimpleValue extends Value {
 
     @Override
     public String toString() {
-        return content;
+        return getContent();
     }
 }

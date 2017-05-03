@@ -10,7 +10,8 @@ public class UnorderedArray<T extends Value> extends ArrayValue<T> {
     @Override
     public void addItem(T item) {
         // ensure item is not already in array (swallow if already existing)
-        if (getItems().contains(item)) return;
+        if (getItems().contains(item))
+            return;
         super.addItem(item);
     }
 }

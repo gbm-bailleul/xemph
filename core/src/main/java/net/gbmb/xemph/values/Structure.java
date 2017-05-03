@@ -3,6 +3,7 @@ package net.gbmb.xemph.values;
 import net.gbmb.xemph.Name;
 import net.gbmb.xemph.Value;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ public class Structure extends Value {
     }
 
     public Map<Name,Value> getFields () {
-        return fields;
+        return Collections.unmodifiableMap(fields);
     }
 
 }

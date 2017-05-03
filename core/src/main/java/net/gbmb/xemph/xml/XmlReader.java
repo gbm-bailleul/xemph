@@ -132,12 +132,12 @@ public class XmlReader {
             }
             if (valueEvent.isCharacters()) {
                 SimpleValue value = new SimpleValue (valueEvent.asCharacters().getData());
-                array.addItem(value);
                 // check if lang is present
                 Attribute attr = ((StartElement) next).getAttributeByName(Name.Q.XML_LANG);
                 if (attr!=null) {
                     value.setXmlLang(attr.getValue());
                 }
+                array.addItem(value);
             } else if (valueEvent.isStartElement()) {
                 // description in li
                 Value value = parseDescription(reader);
