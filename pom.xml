@@ -30,6 +30,7 @@
     <modules>
         <module>core</module>
         <module>examples</module>
+        <module>generator</module>
     </modules>
 
     <dependencies>

@@ -17,6 +17,21 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>xemph</groupId>
+                <artifactId>generator</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>genNamespaces</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>net.gbmb.xemph.namespaces</packageName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
