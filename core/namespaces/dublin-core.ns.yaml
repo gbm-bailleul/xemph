@@ -1,0 +1,10 @@
+default-prefix: dc
+uri: http://purl.org/dc/elements/1.1/
+classname: DublinCore
+properties:
+  - name: identifier
+    type: text
+  - name: source
+    type: text
+  - name: title
+    type: text

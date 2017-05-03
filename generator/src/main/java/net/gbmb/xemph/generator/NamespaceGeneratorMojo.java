@@ -1,7 +1,11 @@
 package net.gbmb.xemph.generator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
 import net.sourceforge.jenesis4java.*;
 import net.sourceforge.jenesis4java.jaloppy.JenesisJalopyEncoder;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -10,6 +14,7 @@ import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * see http://jenesis4java.sourceforge.net/index.html
@@ -50,8 +55,12 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         loadConfiguration();
+        // list namespace definitions
+        Collection<File> nsDefinitions = FileUtils.listFiles(definitionDirectory,new String [] {"yaml"},false);
         try {
-            generate();
+            for (File file: nsDefinitions) {
+                generate(file);
+            }
         } catch (IOException e) {
             throw new MojoExecutionException("Failed generation",e);
         }
@@ -79,15 +88,20 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
     }
 
 
-    private void generate () throws IOException {
+    private void generate (File file) throws IOException {
+        log.warn("Generating: "+file.getPath());
         System.setProperty("jenesis.encoder", JenesisJalopyEncoder.class.getName());
         VirtualMachine vm = VirtualMachine.getVirtualMachine();
         CompilationUnit unit = vm.newCompilationUnit(this.outputJavaDirectory.getAbsolutePath());
         unit.setNamespace(packageName);
 
-        PackageClass cls = unit.newClass("DublinCore");
+        final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        Namespace ns = mapper.readValue(file,Namespace.class);
+
+        PackageClass cls = unit.newClass(ns.getClassname());
         cls.addImport("net.gbmb.xemph.Namespace");
         cls.addImport("net.gbmb.xemph.Name");
+        cls.addImport("net.gbmb.xemph.values.*");
         cls.setExtends("Namespace");
         cls.setAccess(Access.AccessType.PUBLIC);
 
@@ -95,7 +109,7 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
         defaultPrefix.setAccess(Access.AccessType.PUBLIC);
         defaultPrefix.isStatic(true);
         defaultPrefix.isFinal(true);
-        defaultPrefix.setExpression(vm.newString("dc"));
+        defaultPrefix.setExpression(vm.newString(ns.getDefaultPrefix()));
 
         ClassMethod getDefaultPrefix = cls.newMethod(vm.newType(String.class),"getDefaultPrefix");
         getDefaultPrefix.setAccess(Access.AccessType.PUBLIC);
@@ -106,23 +120,43 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
         namespaceURI.setAccess(Access.AccessType.PUBLIC);
         namespaceURI.isStatic(true);
         namespaceURI.isFinal(true);
-        namespaceURI.setExpression(vm.newString("http://purl.org/dc/elements/1.1/"));
+        namespaceURI.setExpression(vm.newString(ns.getUri()));
 
         ClassMethod getNamespaceURI = cls.newMethod(vm.newType(String.class),"getNamespaceURI");
         getNamespaceURI.setAccess(Access.AccessType.PUBLIC);
         getNamespaceURI.newReturn().setExpression(vm.newVar("NAMESPACE_URI"));
         getNamespaceURI.addAnnotation(vm.newAnnotation(Override.class));
 
-        ClassField field1 = cls.newField(vm.newType("Name"),"TITLE");
-        field1.isStatic(true);
-        field1.isFinal(true);
-        field1.setAccess(Access.AccessType.PUBLIC);
-        field1.setExpression(vm.newFree("new Name(NAMESPACE_URI,\"title\")"));
+        ClassMethod getPropertyType = cls.newMethod(vm.newType(Class.class), "getPropertyType");
+        getPropertyType.addParameter(String.class, "propertyName");
+        getPropertyType.setAccess(Access.AccessType.PUBLIC);
+        getPropertyType.newStmt(vm.newFree("if (propertyName==null) return null"));
+
+        for (Property property:ns.getProperties()) {
+            // create field
+            ClassField field1 = cls.newField(vm.newType("Name"),getUpperPropertyName(property.getName()));
+            field1.isStatic(true);
+            field1.isFinal(true);
+            field1.setAccess(Access.AccessType.PUBLIC);
+            field1.setExpression(vm.newFree("new Name(NAMESPACE_URI,\""+property.getName()+"\")"));
+            // type
+            String ifStmt = String.format("else if (%s.equals(propertyName)) return %s",getUpperPropertyName(property.getName()),getTypeClass(property.getType()));
+            getPropertyType.newStmt(vm.newFree(ifStmt));
+        }
+
+        getPropertyType.newStmt(vm.newFree("else return null"));
 
 
         unit.encode();
 
     }
 
+    private String getTypeClass (String typeName) {
+        return "SimpleValue.class";
+    }
+
+    private String getUpperPropertyName (String propertyName) {
+        return propertyName.toUpperCase(); // TODO improve (-)
+    }
 
 }

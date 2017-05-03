@@ -9,4 +9,6 @@ public abstract class Namespace {
 
     public abstract String getNamespaceURI ();
 
+    public abstract Class<?> getPropertyType (String propertyName);
+
 }
