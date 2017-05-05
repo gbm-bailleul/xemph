@@ -1,9 +1,11 @@
 package net.gbmb.xemph.examples;
 
 import net.gbmb.xemph.Name;
-import net.gbmb.xemph.Namespaces;
 import net.gbmb.xemph.Packet;
+import net.gbmb.xemph.namespaces.Dimensions;
 import net.gbmb.xemph.namespaces.DublinCore;
+import net.gbmb.xemph.namespaces.Xmp;
+import net.gbmb.xemph.namespaces.XmpTPg;
 import net.gbmb.xemph.values.*;
 import net.gbmb.xemph.xml.XmlWriter;
 
@@ -18,13 +20,13 @@ public class MyMain {
 
     public static void main (String [] args) throws IOException {
         Packet packet = new Packet();
-        packet.addProperty(new Name(Namespaces.XMP,"BaseURL"),new SimpleValue("http://www.adobe.com/"));
+        packet.addProperty(new Name(Xmp.NAMESPACE_URI,"BaseURL"),new SimpleValue("http://www.adobe.com/"));
 
         Structure dim = new Structure();
-        dim.add(new Name(Namespaces.ST_DIM,"h"),new SimpleValue("11.0"));
-        dim.add(new Name(Namespaces.ST_DIM,"w"),new SimpleValue("8.5"));
-        dim.add(new Name(Namespaces.ST_DIM,"unit"),new SimpleValue("inch"));
-        packet.addProperty(new Name(Namespaces.XMP_TPG,"MaxPageSize"),dim);
+        dim.add(new Name(Dimensions.NAMESPACE_URI,"h"),new SimpleValue("11.0"));
+        dim.add(new Name(Dimensions.NAMESPACE_URI,"w"),new SimpleValue("8.5"));
+        dim.add(new Name(Dimensions.NAMESPACE_URI,"unit"),new SimpleValue("inch"));
+        packet.addProperty(new Name(XmpTPg.NAMESPACE_URI,"MaxPageSize"),dim);
 
         UnorderedArray<SimpleValue> bag = new UnorderedArray<>();
         bag.addItem(new SimpleValue("XMP"));

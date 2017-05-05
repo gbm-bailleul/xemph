@@ -13,11 +13,18 @@ public class Property {
     @JsonProperty
     private String type;
 
+    @JsonProperty
+    private String element;
+
     public String getName() {
         return name;
     }
 
     public String getType() {
         return type;
+    }
+
+    public String getElement() {
+        return element;
     }
 }

@@ -1,0 +1,10 @@
+default-prefix: stDim
+uri: http://ns.adobe.com/xap/1.0/sType/Dimensions#
+classname: Dimensions
+properties:
+  - name: h
+    type: Real
+  - name: w
+    type: Real
+  - name: unit
+    type: OpenChoice # open Choice of unit (ex: inch, mm, pixel, pica, point)

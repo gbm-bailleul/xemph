@@ -1,6 +1,9 @@
 package net.gbmb.xemph;
 
+import net.gbmb.xemph.namespaces.Dimensions;
 import net.gbmb.xemph.namespaces.DublinCore;
+import net.gbmb.xemph.namespaces.Xmp;
+import net.gbmb.xemph.namespaces.XmpTPg;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,22 +17,16 @@ public class Namespaces {
 
     public static final String RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
-    public static final String XMP = "http://ns.adobe.com/xap/1.0/";
-
-    public static final String XMP_TPG = "http://ns.adobe.com/xap/1.0/t/pg/";
-
-    public static final String ST_DIM = "http://ns.adobe.com/xap/1.0/sType/Dimensions#";
-
     private Map<String,String> namespaceToPrefix = new HashMap<>();
 
     private Map<String,String> prefixToNamespace = new HashMap<>();
 
     public Namespaces () {
         prefixToNamespace.put("xml",XML);
-        prefixToNamespace.put("xmp",XMP);
-        prefixToNamespace.put("xmpTPg",XMP_TPG);
-        prefixToNamespace.put("stDim",ST_DIM);
         addNamespace(new DublinCore());
+        addNamespace(new Xmp());
+        addNamespace(new XmpTPg());
+        addNamespace(new Dimensions());
         // load revert map
         for (Map.Entry<String,String> entry:prefixToNamespace.entrySet()) {
             namespaceToPrefix.put(entry.getValue(),entry.getKey());

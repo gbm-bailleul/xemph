@@ -2,9 +2,41 @@ default-prefix: dc
 uri: http://purl.org/dc/elements/1.1/
 classname: DublinCore
 properties:
+  - name: contributor
+    type: Unordered
+    element: Text
+  - name: coverage
+    type: Text
+  - name: creator
+    type: Ordered
+    element: ProperName
+  - name: date
+    type: Ordered
+    element: Date
+  - name: description
+    type: LangAlternative
+  - name: format
+    type: MIME
   - name: identifier
-    type: text
+    type: Text
+  - name: language
+    type: Unordered
+    element: Locale
+  - name: publisher
+    type: Unordered
+    element: ProperName
+  - name: relation
+    type: Unordered
+    element: Text
+  - name: rights
+    type: LangAlternative
   - name: source
-    type: text
+    type: Text
+  - name: subject
+    type: Unordered
+    element: Text
   - name: title
-    type: text
+    type: LangAlternative
+  - name: type
+    type: Unordered
+    element: Text

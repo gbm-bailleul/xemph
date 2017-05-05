@@ -1,0 +1,19 @@
+default-prefix: xmp
+uri: hhttp://ns.adobe.com/xap/1.0/
+classname: Xmp
+properties:
+  - name: CreateDate
+    type: Date
+  - name: CreatorTool
+    type: AgentName
+  - name: Identifier
+    type: Unordered
+    element: Text
+  - name: Label
+    type: Text
+  - name: MetadataDate
+    type: Date
+  - name: ModifyDate
+    type: Date
+  - name: Rating
+    type: OpenChoice

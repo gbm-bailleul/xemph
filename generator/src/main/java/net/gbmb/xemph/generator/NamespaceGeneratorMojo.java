@@ -2,7 +2,6 @@ package net.gbmb.xemph.generator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
 import net.sourceforge.jenesis4java.*;
 import net.sourceforge.jenesis4java.jaloppy.JenesisJalopyEncoder;
 import org.apache.commons.io.FileUtils;
@@ -27,21 +26,19 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
     private Log log;
 
     /**
-     * @parameter expression="${project}"
+     * @parameter property="project"
      * @required
      */
     protected MavenProject project;
 
     /**
-     * @parameter expression=
-     *            "${project.build.directory}/generated-sources/namespaces"
+     * @parameter property="project.build.directory/generated-sources/namespaces"
      * @required
      */
     protected File outputJavaDirectory;
 
     /**
-     * @parameter expression=
-     *            "${project.basedir}/namespaces"
+     * @parameter property="project.basedir/namespaces"
      * @required
      */
     protected File definitionDirectory;
@@ -88,7 +85,7 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
     }
 
 
-    private void generate (File file) throws IOException {
+    private void generate (File file) throws IOException, MojoExecutionException {
         log.warn("Generating: "+file.getPath());
         System.setProperty("jenesis.encoder", JenesisJalopyEncoder.class.getName());
         VirtualMachine vm = VirtualMachine.getVirtualMachine();
@@ -102,6 +99,7 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
         cls.addImport("net.gbmb.xemph.Namespace");
         cls.addImport("net.gbmb.xemph.Name");
         cls.addImport("net.gbmb.xemph.values.*");
+        cls.addImport("net.gbmb.xemph.namespaces.*");
         cls.setExtends("Namespace");
         cls.setAccess(Access.AccessType.PUBLIC);
 
@@ -130,6 +128,7 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
         ClassMethod getPropertyType = cls.newMethod(vm.newType(Class.class), "getPropertyType");
         getPropertyType.addParameter(String.class, "propertyName");
         getPropertyType.setAccess(Access.AccessType.PUBLIC);
+//        getPropertyType.isStatic(true);
         getPropertyType.newStmt(vm.newFree("if (propertyName==null) return null"));
 
         for (Property property:ns.getProperties()) {
@@ -151,8 +150,20 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
 
     }
 
-    private String getTypeClass (String typeName) {
-        return "SimpleValue.class";
+    private String getTypeClass (String typeName) throws MojoExecutionException {
+        if ("Text".equals(typeName)) return "SimpleValue.class";
+        else if ("OpenChoice".equals(typeName)) return "SimpleValue.class";
+        else if ("ClosedChoice".equals(typeName)) return "SimpleValue.class";
+        else if ("MIME".equals(typeName)) return "SimpleValue.class";
+        else if ("AgentName".equals(typeName)) return "SimpleValue.class";
+        else if ("Real".equals(typeName)) return "SimpleValue.class";
+        else if ("Integer".equals(typeName)) return "SimpleValue.class";
+        else if ("Date".equals(typeName)) return "DateValue.class";
+        else if ("Unordered".equals(typeName)) return "UnorderedArray.class";
+        else if ("Ordered".equals(typeName)) return "OrderedArray.class";
+        else if ("LangAlternative".equals(typeName)) return "AlternativeArray.class";
+        else if ("Dimensions".equals(typeName)) return "Dimensions.class";
+        else throw new MojoExecutionException("Unknown type: "+typeName);
     }
 
     private String getUpperPropertyName (String propertyName) {
