@@ -31,6 +31,7 @@
         <module>core</module>
         <module>examples</module>
         <module>generator</module>
+        <module>corpus-testing</module>
     </modules>
 
     <dependencies>
