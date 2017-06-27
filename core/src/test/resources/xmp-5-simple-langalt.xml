@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xe="http://ns.adobe.com/xmp-example/" xmlns:xmpTPg="http://ns.adobe.com/xap/1.0/t/pg/" xmlns:stDim="http://ns.adobe.com/xap/1.0/sType/Dimensions#">
+    <rdf:Description rdf:about="">
+        <dc:Example>
+            <rdf:Alt>
+                <rdf:li xml:lang="fr-fr">titre français</rdf:li>
+                <rdf:li xml:lang="en-us">english title</rdf:li>
+            </rdf:Alt>
+        </dc:Example>
+    </rdf:Description>
+</rdf:RDF>

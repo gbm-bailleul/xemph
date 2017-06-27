@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xe="http://ns.adobe.com/xmp-example/" xmlns:xmpTPg="http://ns.adobe.com/xap/1.0/t/pg/" xmlns:stDim="http://ns.adobe.com/xap/1.0/sType/Dimensions#">
+    <rdf:Description rdf:about="">
+        <!-- description in array -->
+        <dc:subject2>
+            <rdf:Bag>
+                <rdf:li>XMP</rdf:li>
+                <rdf:li>
+                    <rdf:Description>
+                        <rdf:value>Metadata</rdf:value>
+                        <xe:qualifier>artificial example</xe:qualifier>
+                    </rdf:Description>
+                </rdf:li>
+            </rdf:Bag>
+        </dc:subject2>
+    </rdf:Description>
+</rdf:RDF>
