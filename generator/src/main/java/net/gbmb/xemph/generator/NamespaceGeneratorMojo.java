@@ -139,7 +139,7 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
             field1.setAccess(Access.AccessType.PUBLIC);
             field1.setExpression(vm.newFree("new Name(NAMESPACE_URI,\""+property.getName()+"\")"));
             // type
-            String ifStmt = String.format("else if (%s.equals(propertyName)) return %s",getUpperPropertyName(property.getName()),getTypeClass(property.getType()));
+            String ifStmt = String.format("else if (%s.getLocalName().equals(propertyName)) return %s",getUpperPropertyName(property.getName()),getTypeClass(property.getType()));
             getPropertyType.newStmt(vm.newFree(ifStmt));
         }
 
@@ -151,19 +151,33 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
     }
 
     private String getTypeClass (String typeName) throws MojoExecutionException {
-        if ("Text".equals(typeName)) return "SimpleValue.class";
-        else if ("OpenChoice".equals(typeName)) return "SimpleValue.class";
-        else if ("ClosedChoice".equals(typeName)) return "SimpleValue.class";
-        else if ("MIME".equals(typeName)) return "SimpleValue.class";
-        else if ("AgentName".equals(typeName)) return "SimpleValue.class";
-        else if ("Real".equals(typeName)) return "SimpleValue.class";
-        else if ("Integer".equals(typeName)) return "SimpleValue.class";
-        else if ("Date".equals(typeName)) return "DateValue.class";
-        else if ("Unordered".equals(typeName)) return "UnorderedArray.class";
-        else if ("Ordered".equals(typeName)) return "OrderedArray.class";
-        else if ("LangAlternative".equals(typeName)) return "AlternativeArray.class";
-        else if ("Dimensions".equals(typeName)) return "Dimensions.class";
-        else throw new MojoExecutionException("Unknown type: "+typeName);
+        switch (typeName) {
+            case "Text":
+            case "OpenChoice":
+            case "ClosedChoice":
+            case "MIME":
+            case "AgentName":
+            case "Real":
+            case "Integer":
+            case "URI":
+            case "Boolean":
+            case "RenditionClass":
+                return "SimpleValue.class";
+            case "Date":
+                return "DateValue.class";
+            case "Unordered":
+                return "UnorderedArray.class";
+            case "Ordered":
+                return "OrderedArray.class";
+            case "LangAlternative":
+                return "AlternativeArray.class";
+            case "Dimensions":
+                return "Dimensions.class";
+            case "ResourceRef":
+                return "ResourceRef.class";
+            default:
+                throw new MojoExecutionException("Unknown type: " + typeName);
+        }
     }
 
     private String getUpperPropertyName (String propertyName) {
