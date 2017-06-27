@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:Description xmlns:pdfaExtension="http://www.aiim.org/pdfa/ns/extension/" xmlns:pdfaProperty="http://www.aiim.org/pdfa/ns/property#" xmlns:pdfaSchema="http://www.aiim.org/pdfa/ns/schema#" rdf:about="">
+        <pdfaExtension:schemas>
+            <rdf:Bag>
+                <rdf:li rdf:parseType="Resource">
+                    <pdfaSchema:namespaceURI>http://ns.adobe.com/pdf/1.3/</pdfaSchema:namespaceURI>
+                    <pdfaSchema:prefix>pdf</pdfaSchema:prefix>
+                    <pdfaSchema:schema>Adobe PDF Schema</pdfaSchema:schema>
+                    <pdfaSchema:property>
+                        <rdf:Seq>
+                            <rdf:li rdf:parseType="Resource">
+                                <pdfaProperty:category>internal</pdfaProperty:category>
+                                <pdfaProperty:description>A name object indicating whether the document has been modified to include trapping information</pdfaProperty:description>
+                                <pdfaProperty:name>Trapped</pdfaProperty:name>
+                                <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                            </rdf:li>
+                        </rdf:Seq>
+                    </pdfaSchema:property>
+                </rdf:li>
+                <rdf:li rdf:parseType="Resource">
+                    <pdfaSchema:namespaceURI>http://ns.adobe.com/pdfx/1.3/</pdfaSchema:namespaceURI>
+                    <pdfaSchema:prefix>pdfx</pdfaSchema:prefix>
+                    <pdfaSchema:schema>Adobe PDF/X Schema</pdfaSchema:schema>
+                    <pdfaSchema:property>
+                        <rdf:Seq>
+                            <rdf:li rdf:parseType="Resource">
+                                <pdfaProperty:category>internal</pdfaProperty:category>
+                                <pdfaProperty:description>A name object indicating whether the document has been modified to include trapping information</pdfaProperty:description>
+                                <pdfaProperty:name>Trapped</pdfaProperty:name>
+                                <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                            </rdf:li>
+                        </rdf:Seq>
+                    </pdfaSchema:property>
+                </rdf:li>
+                <rdf:li rdf:parseType="Resource">
+                    <pdfaSchema:namespaceURI>http://ns.adobe.com/xap/1.0/mm/</pdfaSchema:namespaceURI>
+                    <pdfaSchema:prefix>xmpMM</pdfaSchema:prefix>
+                    <pdfaSchema:schema>XMP Media Management Schema</pdfaSchema:schema>
+                    <pdfaSchema:property>
+                        <rdf:Seq>
+                            <rdf:li rdf:parseType="Resource">
+                                <pdfaProperty:category>internal</pdfaProperty:category>
+                                <pdfaProperty:description>UUID based identifier for specific incarnation of a document</pdfaProperty:description>
+                                <pdfaProperty:name>InstanceID</pdfaProperty:name>
+                                <pdfaProperty:valueType>URI</pdfaProperty:valueType>
+                            </rdf:li>
+                        </rdf:Seq>
+                    </pdfaSchema:property>
+                </rdf:li>
+                <rdf:li rdf:parseType="Resource">
+                    <pdfaSchema:namespaceURI>http://www.aiim.org/pdfa/ns/id/</pdfaSchema:namespaceURI>
+                    <pdfaSchema:prefix>pdfaid</pdfaSchema:prefix>
+                    <pdfaSchema:schema>PDF/A ID Schema</pdfaSchema:schema>
+                    <pdfaSchema:property>
+                        <rdf:Seq>
+                            <rdf:li rdf:parseType="Resource">
+                                <pdfaProperty:category>internal</pdfaProperty:category>
+                                <pdfaProperty:description>Part of PDF/A standard</pdfaProperty:description>
+                                <pdfaProperty:name>part</pdfaProperty:name>
+                                <pdfaProperty:valueType>Integer</pdfaProperty:valueType>
+                            </rdf:li>
+                            <rdf:li rdf:parseType="Resource">
+                                <pdfaProperty:category>internal</pdfaProperty:category>
+                                <pdfaProperty:description>Amendment of PDF/A standard</pdfaProperty:description>
+                                <pdfaProperty:name>amd</pdfaProperty:name>
+                                <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                            </rdf:li>
+                            <rdf:li rdf:parseType="Resource">
+                                <pdfaProperty:category>internal</pdfaProperty:category>
+                                <pdfaProperty:description>Conformance level of PDF/A standard</pdfaProperty:description>
+                                <pdfaProperty:name>conformance</pdfaProperty:name>
+                                <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                            </rdf:li>
+                        </rdf:Seq>
+                    </pdfaSchema:property>
+                </rdf:li>
+            </rdf:Bag>
+        </pdfaExtension:schemas>
+    </rdf:Description>
+    <rdf:Description xmlns:pdf="http://ns.adobe.com/pdf/1.3/" rdf:about="">
+        <pdf:Producer>http://bfo.com/products/pdf?version=null</pdf:Producer>
+    </rdf:Description>
+    <rdf:Description xmlns:xmp="http://ns.adobe.com/xap/1.0/" rdf:about="">
+        <xmp:MetadataDate>2013-11-26T11:10:28Z</xmp:MetadataDate>
+        <xmp:CreateDate>2013-11-18T13:23:54Z</xmp:CreateDate>
+        <xmp:ModifyDate>2013-11-26T11:10:28Z</xmp:ModifyDate>
+    </rdf:Description>
+    <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:about="">
+        <dc:date>
+            <rdf:Seq>
+                <rdf:li>2013-11-26T11:10:28Z</rdf:li>
+            </rdf:Seq>
+        </dc:date>
+        <dc:format>application/pdf</dc:format>
+    </rdf:Description>
+    <rdf:Description xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/" rdf:about="">
+        <pdfaid:part>2</pdfaid:part>
+        <pdfaid:conformance>B</pdfaid:conformance>
+    </rdf:Description>
+</rdf:RDF>
