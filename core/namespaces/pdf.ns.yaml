@@ -1,0 +1,12 @@
+default-prefix: pdf
+uri: http://ns.adobe.com/pdf/1.3/
+classname: PdfNamespace
+properties:
+  - name: Keywords
+    type: Text
+  - name: PDFVersion
+    type: Text
+  - name: Producer
+    type: AgentName
+  - name: Trapped
+    type: Text # TODO should be boolean

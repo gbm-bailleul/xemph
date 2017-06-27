@@ -1,0 +1,7 @@
+default-prefix: stRef
+uri: http://ns.adobe.com/xap/1.0/sType/ResourceRef#
+classname: ResourceRef
+properties:
+  - name: documentID
+    type: URI
+# TODO complete XMP part 2 1.2.4.1

@@ -1,0 +1,8 @@
+default-prefix: pdfaid
+uri: http://www.aiim.org/pdfa/ns/id/
+classname: PdfaId
+properties:
+  - name: part
+    type: Text
+  - name: conformance
+    type: Text

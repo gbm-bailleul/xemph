@@ -1,9 +1,6 @@
 package net.gbmb.xemph;
 
-import net.gbmb.xemph.namespaces.Dimensions;
-import net.gbmb.xemph.namespaces.DublinCore;
-import net.gbmb.xemph.namespaces.Xmp;
-import net.gbmb.xemph.namespaces.XmpTPg;
+import net.gbmb.xemph.namespaces.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,9 +14,13 @@ public class Namespaces {
 
     public static final String RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
+    public static final String ADOBE_META = "adobe:ns:meta/";
+
     private Map<String,String> namespaceToPrefix = new HashMap<>();
 
     private Map<String,String> prefixToNamespace = new HashMap<>();
+
+    private Map<String,Namespace> namespaceByURL = new HashMap<>();
 
     public Namespaces () {
         prefixToNamespace.put("xml",XML);
@@ -27,14 +28,15 @@ public class Namespaces {
         addNamespace(new Xmp());
         addNamespace(new XmpTPg());
         addNamespace(new Dimensions());
-        // load revert map
-        for (Map.Entry<String,String> entry:prefixToNamespace.entrySet()) {
-            namespaceToPrefix.put(entry.getValue(),entry.getKey());
-        }
+        addNamespace(new PdfNamespace());
+        addNamespace(new PdfaId());
+        addNamespace(new XmpMM());
     }
 
     private void addNamespace (Namespace ns) {
         prefixToNamespace.put(ns.getDefaultPrefix(),ns.getNamespaceURI());
+        namespaceToPrefix.put(ns.getNamespaceURI(),ns.getDefaultPrefix());
+        namespaceByURL.put(ns.getNamespaceURI(),ns);
     }
 
     public String getNamespaceFor (String prefix) {
@@ -48,5 +50,13 @@ public class Namespaces {
     public void registerNamespace(String prefix, String ns) {
         prefixToNamespace.put(prefix,ns);
         namespaceToPrefix.put(ns,prefix);
+    }
+
+    public boolean isDefined (String ns, String name) {
+        Namespace namespace = namespaceByURL.get(ns);
+        if (namespace==null)
+            return false;
+        // TODO should create namespace.isDefined(name)
+        return namespace.getPropertyType(name)!=null;
     }
 }

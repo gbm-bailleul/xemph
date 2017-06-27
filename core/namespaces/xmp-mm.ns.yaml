@@ -1,0 +1,52 @@
+default-prefix: xmpMM
+uri: http://ns.adobe.com/xap/1.0/mm/
+classname: XmpMM
+properties:
+  - name: DerivedFrom
+    type: ResourceRef
+  - name: DocumentID
+    type: URI
+  - name: Hisory
+    type: Ordered
+    element: Text
+  - name: Ingredients
+    type: Unordered
+    element: ResourceRef
+  - name: InstanceID
+    type: URI
+  - name: ManagedFrom
+    type: ResourceRef
+  - name: Manager
+    type: AgentName
+  - name: ManagedTo
+    type: URI
+  - name: ManageUI
+    type: URI
+  - name: ManagerVariant
+    type: Text
+  - name: OriginalDocumentID
+    type: URI
+#  - name: Pantry  TODO
+#    type: Unordered
+  - name: RenditionClass
+    type: RenditionClass
+  - name: RenditionParams
+    type: Text
+  - name: VersionID
+    type: Text
+  - name: Versions
+    type: Ordered
+    element: Version
+
+    element: Colorant
+  - name: Font
+    type: Unordered
+    element: Font
+  - name: MaxPageSize
+    type: Dimensions
+  - name: NPages
+    type: Integer
+  - name: PlateNames
+    type: Ordered
+    element: Text
+
