@@ -71,7 +71,6 @@ public class Packet {
         return getValue(new Name(namespace,localName));
     }
 
-    // TODO keep or remove ?
     public <R extends Value> R getValue(Name name, Class<R> type) {
         return type.cast(getValue(name));
     }
