@@ -84,6 +84,7 @@
                 </executions>
                 <configuration>
                     <skipITs>false</skipITs>
+                    <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
             </plugin>
         </plugins>

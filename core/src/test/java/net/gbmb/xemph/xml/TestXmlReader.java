@@ -95,4 +95,11 @@ public class TestXmlReader {
         assertEquals(1,packet.getProperties().size());
 //        assertTrue(packet.getProperties().get(DublinCore.SUBJECT) instanceof UnorderedArray);
     }
+
+    @Test
+    public void descriptionWithNoTagInProperty () throws Exception {
+        Packet packet = load("/xmp-6-array-in-property.xml");
+        assertEquals(1,packet.getProperties().size());
+        // TODO drill down in structure
+    }
 }
