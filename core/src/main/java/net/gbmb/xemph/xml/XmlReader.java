@@ -76,7 +76,7 @@ public class XmlReader {
         }
         // should be the description end
         if (!event.isEndElement() || !event.asEndElement().getName().equals(Name.Q.RDF_DESCRIPTION))
-            throw forge("Expecting closing rdf:Description",event.getLocation());
+            throw forge("Expecting closing rdf:Description and found: "+event,event.getLocation());
     }
 
     private void parseProperty(StartElement se, XMLEventReader reader, Packet packet) throws XMLStreamException {
