@@ -7,10 +7,7 @@ import net.gbmb.xemph.Value;
 import net.gbmb.xemph.values.*;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.Location;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.*;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
@@ -48,7 +45,7 @@ public class XmlReader {
         while (event.isStartElement()) {
             if (Name.Q.RDF_DESCRIPTION.equals(event.asStartElement().getName())) {
                 // enters in Description if element if rdf:Description
-                parseDescription(event.asStartElement(),reader,packet);
+                parseCompleteDescription(event.asStartElement(),reader,packet);
             } else {
                 // we only expect rdf:Description here
                 throw new XMLStreamException("Only expecting start element: "+Name.Q.RDF_DESCRIPTION);
@@ -66,7 +63,8 @@ public class XmlReader {
         }
     }
 
-    private void parseDescription (StartElement se, XMLEventReader reader, Packet packet) throws XMLStreamException {
+    private void parseCompleteDescription(StartElement se, XMLEventReader reader, Packet packet) throws XMLStreamException {
+        System.err.println("IN  parseCompleteDescription");
         parseTarget(se,packet);
         XMLEvent event = reader.nextTag();
         while (event.isStartElement()) {
@@ -80,11 +78,12 @@ public class XmlReader {
     }
 
     private void parseProperty(StartElement se, XMLEventReader reader, Packet packet) throws XMLStreamException {
+        System.err.println("IN  parseProperty");
         loadNamespaces(se, packet);
         String ns = se.getName().getNamespaceURI();
         String ln = se.getName().getLocalPart();
         XMLEvent next = reader.nextEvent();
-        if (next.isCharacters() && reader.peek().isStartElement()) {
+        if (next.isCharacters() && next.asCharacters().isWhiteSpace()) {
             // this is a whitespace
             next = reader.nextEvent();
         }
@@ -110,7 +109,7 @@ public class XmlReader {
                         throw new XMLStreamException("Unknown description element: " + sde.getName());
                 }
             } else {
-                throw new XMLStreamException("Unknown description namespace: " + sde.getName());
+                throw forge("Unknown description namespace: "+sde,sde.getLocation());
             }
         } else {
             throw forge("Unexpected item: "+next,next.getLocation());
@@ -121,34 +120,51 @@ public class XmlReader {
 
 
     private Value parseDescription(XMLEventReader reader) throws XMLStreamException {
-        return parseDescription(reader,null);
+        Value value =  parseDescriptionContent(reader);
+        XMLEvent event = reader.nextTag();
+        if (!event.isEndElement())
+            throw forge("Expecting end of description tag, found: "+event,event.getLocation());
+        return value;
     }
 
-    private Value parseDescription(XMLEventReader reader, XMLEvent current) throws XMLStreamException {
-        XMLEvent next = current!=null?current:reader.nextTag();
+    /**
+     * Parse the content of a description
+     * The reader.nextEvent() must return the first tag of the description
+     * @param reader
+     * @return
+     * @throws XMLStreamException
+     */
+    private Value parseDescriptionContent(XMLEventReader reader) throws XMLStreamException {
         Map<QName, Value> found = new HashMap<>();
+        XMLEvent next = peekNextNonIgnorable(reader);
         while (next.isStartElement()) {
+            next = reader.nextEvent();
             QName qn = next.asStartElement().getName();
-            XMLEvent valueEvent = reader.nextEvent();
-            if (valueEvent.isCharacters() && reader.peek().isStartElement()) {
-                // whitespace
-                valueEvent = reader.nextEvent();
-            }
+            XMLEvent valueEvent = peekNextNonIgnorable(reader);
+
             if (valueEvent.isCharacters()) {
                 found.put(qn, new SimpleValue(valueEvent.asCharacters().getData()));
+                reader.nextEvent(); // the content that was only peek
                 reader.nextTag(); // closing tag
-                next = reader.nextTag();
+                next = peekNextNonIgnorable(reader);
             } else if (valueEvent.isStartElement()) {
                 if (Namespaces.RDF.equals(valueEvent.asStartElement().getName().getNamespaceURI())) {
                     switch (valueEvent.asStartElement().getName().getLocalPart()) {
-//                        case "Description":
-//                            packet.addProperty(new Name(se.getName()), parseDescription(reader));
-//                            reader.nextTag();
-//                            break;
+                        case "Description":
+                            found.put(qn,parseDescription(reader));
+                            reader.nextTag();
+                            next = peekNextNonIgnorable(reader);
+                            break;
                         case "Bag":
                         case "Seq":
                         case "Alt":
-                            return parseArray(valueEvent.asStartElement(), reader);
+                            valueEvent = reader.nextTag();
+                            Value value =  parseArray(valueEvent.asStartElement(), reader);
+                            found.put(qn,value);
+                            reader.nextTag();
+                            next = peekNextNonIgnorable(reader);
+                            break;
+//                            return ret;
                         default:
                             throw forge("Unknown description element: " + valueEvent.asStartElement().getName(),valueEvent.getLocation());
                     }
@@ -186,11 +202,7 @@ public class XmlReader {
         // read the list
         XMLEvent next = reader.nextTag();
         while (next.isStartElement() && "li".equals(((StartElement) next).getName().getLocalPart())) {
-            XMLEvent valueEvent = reader.nextEvent();
-            if (valueEvent.isCharacters() && reader.peek().isStartElement()) {
-                // whitespace to skip
-                valueEvent = reader.nextTag();
-            }
+            XMLEvent valueEvent = peekNextNonIgnorable(reader);
             if (valueEvent.isCharacters()) {
                 SimpleValue value = new SimpleValue(valueEvent.asCharacters().getData());
                 // check if lang is present
@@ -199,14 +211,15 @@ public class XmlReader {
                     value.setXmlLang(attr.getValue());
                 }
                 array.addItem(value);
+                reader.nextEvent(); // skipping the content
             } else if (valueEvent.isStartElement()) {
                 if (Name.Q.RDF_DESCRIPTION.equals(valueEvent.asStartElement().getName())) {
                     // description in li
+                    reader.nextEvent();
                     Value value = parseDescription(reader);
                     array.addItem(value);
-//                    reader.nextTag();
                 } else {
-                    Value value = parseDescription(reader,valueEvent);
+                    Value value = parseDescriptionContent(reader);
                     array.addItem(value);
 //                    throw forge("Case not handled: "+valueEvent,valueEvent.getLocation());
                 }
@@ -217,6 +230,7 @@ public class XmlReader {
             next = reader.nextTag();
         }
 //        reader.nextTag();
+        XMLEvent ev = peekNextNonIgnorable(reader);
         return array;
     }
 
@@ -228,6 +242,15 @@ public class XmlReader {
             Namespace namespace = namespaces.next();
             packet.getNamespaces().registerNamespace(namespace.getPrefix(), namespace.getNamespaceURI());
         }
+    }
+
+    private XMLEvent peekNextNonIgnorable(XMLEventReader reader) throws XMLStreamException {
+        XMLEvent next = reader.peek();
+        while (next.isCharacters() && next.asCharacters().isWhiteSpace()) {
+            reader.nextEvent();
+            next = reader.peek();
+        }
+        return next;
     }
 
     private XMLStreamException forge (String message, Location location) {

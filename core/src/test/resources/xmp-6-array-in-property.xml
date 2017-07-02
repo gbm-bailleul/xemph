@@ -15,6 +15,14 @@
                                 <pdfaProperty:name>Trapped</pdfaProperty:name>
                                 <pdfaProperty:valueType>Text</pdfaProperty:valueType>
                             </rdf:li>
+                            <rdf:li rdf:parseType="Resource">
+                                <rdf:Description>
+                                    <pdfaProperty:category>internal</pdfaProperty:category>
+                                    <pdfaProperty:description>A name object indicating whether the document has been modified to include trapping information</pdfaProperty:description>
+                                    <pdfaProperty:name>Trapped2</pdfaProperty:name>
+                                    <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                                </rdf:Description>
+                            </rdf:li>
                         </rdf:Seq>
                     </pdfaSchema:property>
                 </rdf:li>
