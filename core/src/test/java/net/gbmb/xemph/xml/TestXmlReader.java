@@ -4,6 +4,7 @@ import net.gbmb.xemph.Name;
 import net.gbmb.xemph.Namespaces;
 import net.gbmb.xemph.Packet;
 import net.gbmb.xemph.namespaces.DublinCore;
+import net.gbmb.xemph.values.SimpleValue;
 import net.gbmb.xemph.values.UnorderedArray;
 import org.junit.Test;
 
@@ -69,9 +70,30 @@ public class TestXmlReader {
     }
 
     @Test
+    public void simpleXmpWithEmptyProperty () throws Exception {
+        Packet packet = load("/xmp-1-1-empty-property.xml");
+        assertEquals(1,packet.getProperties().size());
+ //       packet.getProperties().get(new Name("http://ns.adobe.com/xap/1.0/","BaseURL"))
+  //      assertEquals("",((SimpleValue)(packet.getProperties().get(new Name("http://ns.adobe.com/xap/1.0/","BaseURL")))).getContent());
+    }
+
+    @Test
+    public void simpleXmpInline () throws Exception {
+        Packet packet = load("/xmp-1-inline.xml");
+        assertEquals(1,packet.getProperties().size());
+    }
+
+    @Test
     public void validUnorderedArray () throws Exception {
         Packet packet = load("/xmp-2-array.xml");
-        assertEquals(1,packet.getProperties().size());
+        assertEquals(2,packet.getProperties().size());
+        assertTrue(packet.getProperties().get(DublinCore.SUBJECT) instanceof UnorderedArray);
+    }
+
+    @Test
+    public void validUnorderedArrayInline () throws Exception {
+        Packet packet = load("/xmp-2-array-inline.xml");
+        assertEquals(2,packet.getProperties().size());
         assertTrue(packet.getProperties().get(DublinCore.SUBJECT) instanceof UnorderedArray);
     }
 
@@ -79,14 +101,14 @@ public class TestXmlReader {
     public void rdfDescriptionInArray () throws Exception {
         Packet packet = load("/xmp-3-array-description.xml");
         assertEquals(1,packet.getProperties().size());
-//        assertTrue(packet.getProperties().get(DublinCore.SUBJECT) instanceof UnorderedArray);
+        assertTrue(packet.getProperties().get(DublinCore.SUBJECT) instanceof UnorderedArray);
     }
 
     @Test
     public void rdfDescriptionInSimple () throws Exception {
         Packet packet = load("/xmp-4-simple-description.xml");
         assertEquals(1,packet.getProperties().size());
-//        assertTrue(packet.getProperties().get(DublinCore.SUBJECT) instanceof UnorderedArray);
+//        assertTrue(packet.getProperties().get(DublinCore.SOURCE) instanceof UnorderedArray);
     }
 
     @Test

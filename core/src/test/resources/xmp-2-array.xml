@@ -8,5 +8,12 @@
                 <rdf:li>ISO Standard</rdf:li>
             </rdf:Bag>
         </dc:subject>
+        <dc:subject2>
+            <rdf:Bag>
+                <rdf:li>XMP</rdf:li>
+                <rdf:li>metadata</rdf:li>
+                <rdf:li>ISO Standard</rdf:li>
+            </rdf:Bag>
+        </dc:subject2>
     </rdf:Description>
 </rdf:RDF>

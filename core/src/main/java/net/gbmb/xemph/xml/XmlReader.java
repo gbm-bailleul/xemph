@@ -5,6 +5,8 @@ import net.gbmb.xemph.Namespaces;
 import net.gbmb.xemph.Packet;
 import net.gbmb.xemph.Value;
 import net.gbmb.xemph.values.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.*;
@@ -22,6 +24,12 @@ import java.util.Map;
  */
 public class XmlReader {
 
+    private Log logger = LogFactory.getLog(this.getClass());
+
+    public XmlReader () {
+        log("Starting XmlReader");
+    }
+
     public Packet parse(InputStream input) throws XMLStreamException {
         XMLInputFactory factory = XMLInputFactory.newFactory();
         factory.setProperty(XMLInputFactory.IS_COALESCING,true);
@@ -32,13 +40,14 @@ public class XmlReader {
     public Packet parse(XMLEventReader reader) throws XMLStreamException {
         Packet packet = new Packet();
         // go to first startElement
+        log("Start skipping before first start element");
         while (reader.hasNext() && !reader.peek().isStartElement())
             reader.nextEvent();
-        // TODO ensure we are on rdf:RDF
         // start parsing expecting rdf:RDF
         StartElement se = reader.nextTag().asStartElement();
         if (!se.getName().equals(Name.Q.RDF_RDF))
             throw new XMLStreamException(String.format("Expected %s at %d:%d(%d)",Name.Q.RDF_RDF,se.getLocation().getLineNumber(),se.getLocation().getColumnNumber(),se.getLocation().getCharacterOffset()));
+        log("Found starting rdf:RDF");
         loadNamespaces(se, packet);
         // now parsing description
         XMLEvent event = reader.nextTag();
@@ -63,22 +72,34 @@ public class XmlReader {
         }
     }
 
+    // TODO inverser l'ordre des params (consistency)
+    private void log (XMLEvent se, String comment) {
+        logger.debug(comment+" : "+se.getLocation().getLineNumber()+":"+se.getLocation().getColumnNumber()+" / "+se.toString());
+    }
+
+    private void log (String comment) {
+        logger.debug(comment);
+    }
+
     private void parseCompleteDescription(StartElement se, XMLEventReader reader, Packet packet) throws XMLStreamException {
-        System.err.println("IN  parseCompleteDescription");
+        log (se,"IN parseCompleteDescription");
+        log(reader.peek(),"Next event");
         parseTarget(se,packet);
         XMLEvent event = reader.nextTag();
         while (event.isStartElement()) {
             // this is a new property in the description
             parseProperty(event.asStartElement(),reader,packet);
+            log(reader.peek(),"Event after parseProperty");
             event = reader.nextTag();
         }
         // should be the description end
         if (!event.isEndElement() || !event.asEndElement().getName().equals(Name.Q.RDF_DESCRIPTION))
             throw forge("Expecting closing rdf:Description and found: "+event,event.getLocation());
+        log(reader.peek(),"Event after parseCompleteDescription");
     }
 
     private void parseProperty(StartElement se, XMLEventReader reader, Packet packet) throws XMLStreamException {
-        System.err.println("IN  parseProperty");
+        log (se,"IN parseProperty");
         loadNamespaces(se, packet);
         String ns = se.getName().getNamespaceURI();
         String ln = se.getName().getLocalPart();
@@ -91,6 +112,11 @@ public class XmlReader {
             // simple value
             SimpleValue value = new SimpleValue(next.asCharacters().getData());
             packet.addProperty(new Name(ns, ln), value);
+            reader.nextTag();
+        } else if (next.isEndElement()) {
+            // the value was empty, consider simple value with empty string
+            SimpleValue value = new SimpleValue("");
+            packet.addProperty(new Name(ns,ln), value);
         } else if (next.isStartElement()) {
             StartElement sde = (StartElement) next;
             if (Namespaces.RDF.equals(sde.getName().getNamespaceURI())) {
@@ -115,7 +141,8 @@ public class XmlReader {
             throw forge("Unexpected item: "+next,next.getLocation());
         }
         // ending property description
-        reader.next();
+//        reader.next();
+        log(reader.peek(),"End parseProperty");
     }
 
 
