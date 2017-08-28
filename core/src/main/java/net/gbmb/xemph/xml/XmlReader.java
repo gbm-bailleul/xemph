@@ -141,7 +141,6 @@ public class XmlReader {
             throw forge("Unexpected item: "+next,next.getLocation());
         }
         // ending property description
-//        reader.next();
         log(reader.peek(),"End parseProperty");
     }
 
@@ -178,6 +177,7 @@ public class XmlReader {
                 if (Namespaces.RDF.equals(valueEvent.asStartElement().getName().getNamespaceURI())) {
                     switch (valueEvent.asStartElement().getName().getLocalPart()) {
                         case "Description":
+                            // TODO should test this grammar case
                             found.put(qn,parseDescription(reader));
                             reader.nextTag();
                             next = peekNextNonIgnorable(reader);
@@ -191,26 +191,25 @@ public class XmlReader {
                             reader.nextTag();
                             next = peekNextNonIgnorable(reader);
                             break;
-//                            return ret;
                         default:
                             throw forge("Unknown description element: " + valueEvent.asStartElement().getName(),valueEvent.getLocation());
                     }
                 }  else {
-                    throw forge("Not implemented 2: "+valueEvent,valueEvent.getLocation());
+                    throw forge("Not implemented A : "+valueEvent,valueEvent.getLocation());
                 }
             } else {
-                throw forge("Not implemented: "+valueEvent,valueEvent.getLocation());
+                throw forge("Not implemented B : "+valueEvent,valueEvent.getLocation());
             }
         }
         if (found.containsKey(Name.Q.XML_LANG)) {
             // description of a value
             Value value = found.remove(Name.Q.XML_LANG);
-            found.entrySet().forEach(e -> value.addQualifier(new Name(e.getKey()), ((SimpleValue)e.getValue()).getContent()));
+            found.forEach((key,val) -> value.addQualifier(new Name(key), ((SimpleValue)val).getContent()));
             return value;
         } else {
             // description of structure if all namespaces are equals
             Structure struct = new Structure();
-            found.entrySet().forEach(e -> struct.add(new Name(e.getKey()), e.getValue()));
+            found.forEach((key, value) -> struct.add(new Name(key), value));
             return struct;
         }
     }
@@ -248,25 +247,23 @@ public class XmlReader {
                 } else {
                     Value value = parseDescriptionContent(reader);
                     array.addItem(value);
-//                    throw forge("Case not handled: "+valueEvent,valueEvent.getLocation());
                 }
             } else {
                 throw forge("Unexpected event in li: "+valueEvent,valueEvent.getLocation());
             }
-            next = reader.nextTag();
+            reader.nextTag();
             next = reader.nextTag();
         }
-//        reader.nextTag();
-        XMLEvent ev = peekNextNonIgnorable(reader);
+        peekNextNonIgnorable(reader);
         return array;
     }
 
 
     private void loadNamespaces(StartElement se, Packet packet) {
         // load all namespaces
-        Iterator<Namespace> namespaces = se.getNamespaces();
+        Iterator namespaces = se.getNamespaces();
         while (namespaces.hasNext()) {
-            Namespace namespace = namespaces.next();
+            Namespace namespace = (Namespace)namespaces.next();
             packet.getNamespaces().registerNamespace(namespace.getPrefix(), namespace.getNamespaceURI());
         }
     }

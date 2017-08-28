@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
  */
 public class TestSimpleValueAndSubtypes {
 
-    public static final String CONTENT = "mycontent";
+    private static final String CONTENT = "mycontent";
 
 
     @Test

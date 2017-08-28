@@ -1,7 +1,6 @@
 package net.gbmb.xemph.xml;
 
 import net.gbmb.xemph.Name;
-import net.gbmb.xemph.Namespaces;
 import net.gbmb.xemph.Packet;
 import net.gbmb.xemph.namespaces.DublinCore;
 import net.gbmb.xemph.values.SimpleValue;
@@ -69,12 +68,16 @@ public class TestXmlReader {
         assertEquals(1,packet.getProperties().size());
     }
 
+    @Test(expected = XMLStreamException.class)
+    public void simpleXmpWithUnexpectedEntity () throws Exception {
+        load("/xmp-1-2-unexpected-entity.xml");
+    }
+
     @Test
     public void simpleXmpWithEmptyProperty () throws Exception {
         Packet packet = load("/xmp-1-1-empty-property.xml");
         assertEquals(1,packet.getProperties().size());
- //       packet.getProperties().get(new Name("http://ns.adobe.com/xap/1.0/","BaseURL"))
-  //      assertEquals("",((SimpleValue)(packet.getProperties().get(new Name("http://ns.adobe.com/xap/1.0/","BaseURL")))).getContent());
+        assertEquals("",((SimpleValue)(packet.getProperties().get(new Name("http://ns.adobe.com/xap/1.0/","BaseURL")))).getContent());
     }
 
     @Test
@@ -88,6 +91,16 @@ public class TestXmlReader {
         Packet packet = load("/xmp-2-array.xml");
         assertEquals(2,packet.getProperties().size());
         assertTrue(packet.getProperties().get(DublinCore.SUBJECT) instanceof UnorderedArray);
+    }
+
+    @Test(expected = XMLStreamException.class)
+    public void invalidArrayType () throws Exception {
+        Packet packet = load("/xmp-2-2-not-existing-list.xml");
+    }
+
+    @Test(expected = XMLStreamException.class)
+    public void invalidArrayNamespaceType () throws Exception {
+        Packet packet = load("/xmp-2-3-not-existing-list-ns.xml");
     }
 
     @Test

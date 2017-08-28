@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class AlternativeArray<T extends Value> extends ArrayValue<T> {
 
-    private Map<String,T> langMap = new HashMap<String, T>();
+    private Map<String,T> langMap = new HashMap<>();
 
     public void addItem (T item) {
         langMap.put(item.getXmlLang(),item);

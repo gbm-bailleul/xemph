@@ -63,6 +63,11 @@ public class Packet {
         return properties.keySet();
     }
 
+    /**
+     * Return the Value associated with the Name
+     * @param name identifying the value
+     * @return Value or null if not existing
+     */
     public Value getValue(Name name) {
         return properties.get(name);
     }
