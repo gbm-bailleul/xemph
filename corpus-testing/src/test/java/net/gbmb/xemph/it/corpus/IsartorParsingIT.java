@@ -30,7 +30,7 @@ public class IsartorParsingIT extends AbstractParsing {
     }
 
     public static List<String> getSkipFile () {
-        List ret = new ArrayList();
+        List<String> ret = new ArrayList<>();
         ret.add("isartor-6-1-3-t02-fail-a.pdf"); // encrypted PDF
         ret.add("isartor-6-7-2-t01-fail-a.pdf"); // no xmp in PDF
         return ret;

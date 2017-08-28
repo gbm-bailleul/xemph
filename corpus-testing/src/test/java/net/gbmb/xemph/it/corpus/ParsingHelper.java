@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class ParsingHelper {
 
-    protected static Collection<Object[]> data (File root, List<String> skipList) throws Exception {
+    protected static Collection<Object[]> data (File root, List<String> skipList) {
         Collection<File> files = FileUtils.listFiles(root,new String []{"PDF","pdf"},true);
         Collection<Object[]> result = new ArrayList<>(files.size());
 
