@@ -135,7 +135,8 @@ public class XmlReader {
                         throw new XMLStreamException("Unknown description element: " + sde.getName());
                 }
             } else {
-                throw forge("Unknown description namespace: "+sde,sde.getLocation());
+                Structure struct =parseStructure(sde,reader);
+                packet.addProperty(new Name(se.getName()),struct);
             }
         } else {
             throw forge("Unexpected item: "+next,next.getLocation());
@@ -256,6 +257,42 @@ public class XmlReader {
         }
         peekNextNonIgnorable(reader);
         return array;
+    }
+
+    private Structure parseStructure (StartElement se, XMLEventReader reader) throws XMLStreamException {
+        XMLEvent next = reader.nextTag();
+        QName structName = se.getName();
+        // opening rdf:Description
+        // TODO ensure next is rdf:Description
+        // parse fields
+        next = reader.nextTag();
+        // parse fields
+        Structure struct = new Structure();
+        next = parseStructureContent(struct,next,reader);
+        // ending the structure description
+        if (!next.isEndElement() || !Name.Q.RDF_DESCRIPTION.equals(next.asEndElement().getName())) {
+            // expect closing structure
+            throw forge("Expecting closing rdf:Description and found: "+next,next.getLocation());
+        }
+        next = reader.nextTag(); // closing rdf:Description
+        if (!next.isEndElement() || !structName.equals(next.asEndElement().getName())) {
+            // expect closing structure
+            throw forge("Expecting closing structure '"+structName.toString()+"' and found: "+next,next.getLocation());
+        }
+        reader.nextTag(); // closing struct element
+        return struct;
+    }
+
+    private XMLEvent parseStructureContent (Structure struct, XMLEvent next, XMLEventReader reader) throws XMLStreamException {
+        while (next.isStartElement()) {
+            QName fieldName = next.asStartElement().getName();
+            // TODO limited : consider the value of a field is always simple
+            String content = reader.nextEvent().asCharacters().getData();
+            struct.add(new Name(fieldName),new SimpleValue(content));
+            reader.nextTag(); // closing field element
+            next = reader.nextTag();
+        }
+        return next;
     }
 
 

@@ -2,9 +2,12 @@ package net.gbmb.xemph.xml;
 
 import net.gbmb.xemph.Name;
 import net.gbmb.xemph.Packet;
+import net.gbmb.xemph.Value;
 import net.gbmb.xemph.namespaces.DublinCore;
 import net.gbmb.xemph.values.SimpleValue;
+import net.gbmb.xemph.values.Structure;
 import net.gbmb.xemph.values.UnorderedArray;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.xml.stream.XMLStreamException;
@@ -136,5 +139,37 @@ public class TestXmlReader {
         Packet packet = load("/xmp-6-array-in-property.xml");
         assertEquals(1,packet.getProperties().size());
         // TODO drill down in structure
+    }
+
+    @Ignore
+    @Test
+    public void arrayOfStruct () throws Exception {
+        Packet packet = load("/xmp-7-2-array-of-struct.xml");
+        assertEquals(1,packet.getProperties().size());
+        Name name = packet.getProperties().keySet().iterator().next();
+        Value value = packet.getValue(name);
+        assertTrue(value instanceof UnorderedArray);
+
+        UnorderedArray array = (UnorderedArray)value;
+        assertEquals(2,array.getItems().size()); // TODO size method on array
+        assertTrue(array.getItems().get(0) instanceof Structure);
+        assertTrue(array.getItems().get(1) instanceof Structure);
+
+        Structure struct = (Structure)array.getItems().get(0);
+        assertEquals(3,struct.getFields().size());
+        System.out.println(array.getItems().get(0));
+    }
+
+    @Test
+    public void simpleStruct () throws Exception {
+        Packet packet = load("/xmp-7-1-struct.xml");
+        assertEquals(1,packet.getProperties().size());
+        Name name = packet.getProperties().keySet().iterator().next();
+        Value value = packet.getValue(name);
+        assertTrue(value instanceof Structure);
+
+        Structure struct = (Structure)value;
+        assertEquals(3,struct.getFields().size());
+        System.out.println(value);
     }
 }

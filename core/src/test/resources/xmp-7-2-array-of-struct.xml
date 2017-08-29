@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/" xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xe="http://ns.adobe.com/xmp-example/" xmlns:xmpTPg="http://ns.adobe.com/xap/1.0/t/pg/" xmlns:stDim="http://ns.adobe.com/xap/1.0/sType/Dimensions#">
+    <rdf:Description rdf:about="">
+        <xmpMM:Pantry>
+            <rdf:Bag>
+                <rdf:li>
+                    <xmpTPg:MaxPageSize>
+                        <rdf:Description>
+                            <stDim:h>11.0</stDim:h>
+                            <stDim:w>8.5</stDim:w>
+                            <stDim:unit>inch</stDim:unit>
+                        </rdf:Description>
+                    </xmpTPg:MaxPageSize>
+                </rdf:li>
+                <rdf:li>
+                    <xmpTPg:MaxPageSize>
+                        <rdf:Description>
+                            <stDim:h>13.0</stDim:h>
+                            <stDim:w>8.5</stDim:w>
+                            <stDim:unit>cm</stDim:unit>
+                        </rdf:Description>
+                    </xmpTPg:MaxPageSize>
+                </rdf:li>
+            </rdf:Bag>
+        </xmpMM:Pantry>
+    </rdf:Description>
+</rdf:RDF>
