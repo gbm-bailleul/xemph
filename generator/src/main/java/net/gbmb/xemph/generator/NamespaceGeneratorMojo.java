@@ -181,7 +181,15 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
     }
 
     private String getUpperPropertyName (String propertyName) {
-        return propertyName.toUpperCase(); // TODO improve (-)
+        StringBuilder sb = new StringBuilder();
+        sb.append(Character.toUpperCase(propertyName.charAt(0)));
+        for (int i=1; i < propertyName.length(); i++) {
+            if (Character.isUpperCase(propertyName.charAt(i))) {
+                sb.append('_');
+            }
+            sb.append(Character.toUpperCase(propertyName.charAt(i)));
+        }
+        return sb.toString();
     }
 
 }
