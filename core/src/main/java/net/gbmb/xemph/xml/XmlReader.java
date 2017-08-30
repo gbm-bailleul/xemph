@@ -10,10 +10,7 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.*;
-import javax.xml.stream.events.Attribute;
-import javax.xml.stream.events.Namespace;
-import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
+import javax.xml.stream.events.*;
 import java.io.InputStream;
 import java.util.*;
 
@@ -59,7 +56,19 @@ public class XmlReader {
         while (event.isStartElement()) {
             if (Name.Q.RDF_DESCRIPTION.equals(event.asStartElement().getName())) {
                 // enters in Description if element if rdf:Description
-                parseCompleteDescription(event.asStartElement(),reader,packet);
+                parseTarget(event.asStartElement(),packet);
+                event = reader.nextTag();
+                while (event.isStartElement()) {
+                    // this is a new property in the description
+                    parseProperty(event.asStartElement(),reader,packet);
+                    log(reader.peek(),"Event after parseProperty");
+                    event = reader.nextTag();
+                }
+                // should be the description end
+                if (!event.isEndElement() || !event.asEndElement().getName().equals(Name.Q.RDF_DESCRIPTION))
+                    throw forge("Expecting closing rdf:Description and found: "+event,event.getLocation());
+                log(reader.peek(),"Event after parseCompleteDescription");
+
             } else {
                 // we only expect rdf:Description here
                 throw new XMLStreamException("Only expecting start element: "+Name.Q.RDF_DESCRIPTION);
@@ -86,30 +95,13 @@ public class XmlReader {
         logger.debug(comment);
     }
 
-    private void parseCompleteDescription(StartElement se, BiDirectionalXMEventLReader reader, Packet packet) throws XMLStreamException {
-        log (se,"IN parseCompleteDescription");
-        log(reader.peek(),"Next event");
-        parseTarget(se,packet);
-        XMLEvent event = reader.nextTag();
-        while (event.isStartElement()) {
-            // this is a new property in the description
-            parseProperty(event.asStartElement(),reader,packet);
-            log(reader.peek(),"Event after parseProperty");
-            event = reader.nextTag();
-        }
-        // should be the description end
-        if (!event.isEndElement() || !event.asEndElement().getName().equals(Name.Q.RDF_DESCRIPTION))
-            throw forge("Expecting closing rdf:Description and found: "+event,event.getLocation());
-        log(reader.peek(),"Event after parseCompleteDescription");
-    }
-
     private void parseProperty(StartElement se, BiDirectionalXMEventLReader reader, Packet packet) throws XMLStreamException {
         log (se,"IN parseProperty");
         loadNamespaces(se, packet);
         String ns = se.getName().getNamespaceURI();
         String ln = se.getName().getLocalPart();
         XMLEvent next = reader.nextEvent();
-        if (next.isCharacters() && next.asCharacters().isWhiteSpace()) {
+        while (next instanceof Comment || (next.isCharacters() && next.asCharacters().isWhiteSpace())) {
             // this is a whitespace
             next = reader.nextEvent();
         }
@@ -127,19 +119,23 @@ public class XmlReader {
             if (Namespaces.RDF.equals(sde.getName().getNamespaceURI())) {
                 switch (sde.getName().getLocalPart()) {
                     case "Description":
+                        // description
                         packet.addProperty(new Name(se.getName()), parseDescription(reader));
                         reader.nextTag();
                         break;
                     case "Bag":
                     case "Seq":
                     case "Alt":
+                        // array
                         packet.addProperty(new Name(se.getName()), parseArray(sde, reader));
                         reader.nextTag();
                         break;
                     default:
+                        // unknown
                         throw new XMLStreamException("Unknown description element: " + sde.getName());
                 }
             } else {
+                // structure case
                 Structure struct =parseStructure(sde,reader);
                 packet.addProperty(new Name(se.getName()),struct);
             }
@@ -273,7 +269,14 @@ public class XmlReader {
         next = reader.nextTag();
         // parse fields
         Structure struct = new Structure();
-        next = parseStructureContent(struct,next,reader);
+        while (next.isStartElement()) {
+            QName fieldName = next.asStartElement().getName();
+            // TODO limited : consider the value of a field is always simple
+            String content = reader.nextEvent().asCharacters().getData();
+            struct.add(new Name(fieldName),new SimpleValue(content));
+            reader.nextTag(); // closing field element
+            next = reader.nextTag();
+        }
         // ending the structure description
         if (!next.isEndElement() || !Name.Q.RDF_DESCRIPTION.equals(next.asEndElement().getName())) {
             // expect closing structure
@@ -287,19 +290,6 @@ public class XmlReader {
         reader.nextTag(); // closing struct element
         return struct;
     }
-
-    private XMLEvent parseStructureContent (Structure struct, XMLEvent next, BiDirectionalXMEventLReader reader) throws XMLStreamException {
-        while (next.isStartElement()) {
-            QName fieldName = next.asStartElement().getName();
-            // TODO limited : consider the value of a field is always simple
-            String content = reader.nextEvent().asCharacters().getData();
-            struct.add(new Name(fieldName),new SimpleValue(content));
-            reader.nextTag(); // closing field element
-            next = reader.nextTag();
-        }
-        return next;
-    }
-
 
     private void loadNamespaces(StartElement se, Packet packet) {
         // load all namespaces
