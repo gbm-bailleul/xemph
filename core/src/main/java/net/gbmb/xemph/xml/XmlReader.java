@@ -15,9 +15,7 @@ import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Guillaume Bailleul on 21/10/2016.
@@ -34,10 +32,17 @@ public class XmlReader {
         XMLInputFactory factory = XMLInputFactory.newFactory();
         factory.setProperty(XMLInputFactory.IS_COALESCING,true);
         XMLEventReader reader = factory.createXMLEventReader(input);
+        BiDirectionalXMEventLReader bidir = new BiDirectionalXMEventLReader(reader);
+        return parse(bidir);
+    }
+
+    public Packet parse(XMLEventReader externalReader) throws XMLStreamException {
+        BiDirectionalXMEventLReader reader = externalReader instanceof BiDirectionalXMEventLReader?
+                (BiDirectionalXMEventLReader)externalReader:new BiDirectionalXMEventLReader(externalReader);
         return parse(reader);
     }
 
-    public Packet parse(XMLEventReader reader) throws XMLStreamException {
+    private Packet parse(BiDirectionalXMEventLReader reader) throws XMLStreamException {
         Packet packet = new Packet();
         // go to first startElement
         log("Start skipping before first start element");
@@ -81,7 +86,7 @@ public class XmlReader {
         logger.debug(comment);
     }
 
-    private void parseCompleteDescription(StartElement se, XMLEventReader reader, Packet packet) throws XMLStreamException {
+    private void parseCompleteDescription(StartElement se, BiDirectionalXMEventLReader reader, Packet packet) throws XMLStreamException {
         log (se,"IN parseCompleteDescription");
         log(reader.peek(),"Next event");
         parseTarget(se,packet);
@@ -98,7 +103,7 @@ public class XmlReader {
         log(reader.peek(),"Event after parseCompleteDescription");
     }
 
-    private void parseProperty(StartElement se, XMLEventReader reader, Packet packet) throws XMLStreamException {
+    private void parseProperty(StartElement se, BiDirectionalXMEventLReader reader, Packet packet) throws XMLStreamException {
         log (se,"IN parseProperty");
         loadNamespaces(se, packet);
         String ns = se.getName().getNamespaceURI();
@@ -146,7 +151,7 @@ public class XmlReader {
     }
 
 
-    private Value parseDescription(XMLEventReader reader) throws XMLStreamException {
+    private Value parseDescription(BiDirectionalXMEventLReader reader) throws XMLStreamException {
         Value value =  parseDescriptionContent(reader);
         XMLEvent event = reader.nextTag();
         if (!event.isEndElement())
@@ -161,7 +166,7 @@ public class XmlReader {
      * @return
      * @throws XMLStreamException
      */
-    private Value parseDescriptionContent(XMLEventReader reader) throws XMLStreamException {
+    private Value parseDescriptionContent(BiDirectionalXMEventLReader reader) throws XMLStreamException {
         Map<QName, Value> found = new HashMap<>();
         XMLEvent next = peekNextNonIgnorable(reader);
         while (next.isStartElement()) {
@@ -216,7 +221,7 @@ public class XmlReader {
     }
 
 
-    private ArrayValue parseArray(StartElement se, XMLEventReader reader) throws XMLStreamException {
+    private ArrayValue parseArray(StartElement se, BiDirectionalXMEventLReader reader) throws XMLStreamException {
         ArrayValue<Value> array;
         if ("Seq".equals(se.getName().getLocalPart()))
             array = new OrderedArray<>();
@@ -259,7 +264,7 @@ public class XmlReader {
         return array;
     }
 
-    private Structure parseStructure (StartElement se, XMLEventReader reader) throws XMLStreamException {
+    private Structure parseStructure (StartElement se, BiDirectionalXMEventLReader reader) throws XMLStreamException {
         XMLEvent next = reader.nextTag();
         QName structName = se.getName();
         // opening rdf:Description
@@ -283,7 +288,7 @@ public class XmlReader {
         return struct;
     }
 
-    private XMLEvent parseStructureContent (Structure struct, XMLEvent next, XMLEventReader reader) throws XMLStreamException {
+    private XMLEvent parseStructureContent (Structure struct, XMLEvent next, BiDirectionalXMEventLReader reader) throws XMLStreamException {
         while (next.isStartElement()) {
             QName fieldName = next.asStartElement().getName();
             // TODO limited : consider the value of a field is always simple
@@ -305,7 +310,7 @@ public class XmlReader {
         }
     }
 
-    private XMLEvent peekNextNonIgnorable(XMLEventReader reader) throws XMLStreamException {
+    private XMLEvent peekNextNonIgnorable(BiDirectionalXMEventLReader reader) throws XMLStreamException {
         XMLEvent next = reader.peek();
         while (next.isCharacters() && next.asCharacters().isWhiteSpace()) {
             reader.nextEvent();
@@ -321,5 +326,6 @@ public class XmlReader {
                 location.getColumnNumber(),
                 location.getCharacterOffset()));
     }
+
 
 }
