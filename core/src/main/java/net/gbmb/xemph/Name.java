@@ -64,6 +64,8 @@ public class Name {
 
         public static final QName RDF_RDF = new QName(Namespaces.RDF,"RDF");
 
+        public static final QName RDF_VALUE = new QName(Namespaces.RDF,"value");
+
         public static final QName RDF_DESCRIPTION = new QName(Namespaces.RDF,"Description");
 
         public static final QName XMP_META = new QName(Namespaces.ADOBE_META,"xmpmeta");

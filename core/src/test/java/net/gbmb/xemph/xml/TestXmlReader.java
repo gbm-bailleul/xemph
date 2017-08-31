@@ -141,7 +141,6 @@ public class TestXmlReader {
         // TODO drill down in structure
     }
 
-    @Ignore
     @Test
     public void arrayOfStruct () throws Exception {
         Packet packet = load("/xmp-7-2-array-of-struct.xml");

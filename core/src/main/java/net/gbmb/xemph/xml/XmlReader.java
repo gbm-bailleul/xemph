@@ -29,17 +29,17 @@ public class XmlReader {
         XMLInputFactory factory = XMLInputFactory.newFactory();
         factory.setProperty(XMLInputFactory.IS_COALESCING,true);
         XMLEventReader reader = factory.createXMLEventReader(input);
-        BiDirectionalXMEventLReader bidir = new BiDirectionalXMEventLReader(reader);
-        return parse(bidir);
-    }
-
-    public Packet parse(XMLEventReader externalReader) throws XMLStreamException {
-        BiDirectionalXMEventLReader reader = externalReader instanceof BiDirectionalXMEventLReader?
-                (BiDirectionalXMEventLReader)externalReader:new BiDirectionalXMEventLReader(externalReader);
+        ExtendedXMLEventReader bidir = new ExtendedXMLEventReader(reader);
         return parse(reader);
     }
 
-    private Packet parse(BiDirectionalXMEventLReader reader) throws XMLStreamException {
+    public Packet parse(XMLEventReader externalReader) throws XMLStreamException {
+        ExtendedXMLEventReader reader = externalReader instanceof ExtendedXMLEventReader ?
+                (ExtendedXMLEventReader)externalReader:new ExtendedXMLEventReader(externalReader);
+        return parse(reader);
+    }
+
+    public Packet parse(ExtendedXMLEventReader reader) throws XMLStreamException {
         Packet packet = new Packet();
         // go to first startElement
         log("Start skipping before first start element");
@@ -61,13 +61,13 @@ public class XmlReader {
                 while (event.isStartElement()) {
                     // this is a new property in the description
                     parseProperty(event.asStartElement(),reader,packet);
-                    log(reader.peek(),"Event after parseProperty");
+                    log("Event after parseProperty", reader.peek());
                     event = reader.nextTag();
                 }
                 // should be the description end
                 if (!event.isEndElement() || !event.asEndElement().getName().equals(Name.Q.RDF_DESCRIPTION))
                     throw forge("Expecting closing rdf:Description and found: "+event,event.getLocation());
-                log(reader.peek(),"Event after parseCompleteDescription");
+                log("Event after parseCompleteDescription", reader.peek());
 
             } else {
                 // we only expect rdf:Description here
@@ -86,8 +86,7 @@ public class XmlReader {
         }
     }
 
-    // TODO inverser l'ordre des params (consistency)
-    private void log (XMLEvent se, String comment) {
+    private void log(String comment, XMLEvent se) {
         logger.debug(comment+" : "+se.getLocation().getLineNumber()+":"+se.getLocation().getColumnNumber()+" / "+se.toString());
     }
 
@@ -95,8 +94,8 @@ public class XmlReader {
         logger.debug(comment);
     }
 
-    private void parseProperty(StartElement se, BiDirectionalXMEventLReader reader, Packet packet) throws XMLStreamException {
-        log (se,"IN parseProperty");
+    private void parseProperty(StartElement se, ExtendedXMLEventReader reader, Packet packet) throws XMLStreamException {
+        log ("IN parseProperty", se);
         loadNamespaces(se, packet);
         String ns = se.getName().getNamespaceURI();
         String ln = se.getName().getLocalPart();
@@ -135,19 +134,17 @@ public class XmlReader {
                         throw new XMLStreamException("Unknown description element: " + sde.getName());
                 }
             } else {
-                // structure case
-                Structure struct =parseStructure(sde,reader);
-                packet.addProperty(new Name(se.getName()),struct);
+                throw forge("Unexpected item: "+next,next.getLocation());
             }
         } else {
             throw forge("Unexpected item: "+next,next.getLocation());
         }
         // ending property description
-        log(reader.peek(),"End parseProperty");
+        log("End parseProperty", reader.peek());
     }
 
 
-    private Value parseDescription(BiDirectionalXMEventLReader reader) throws XMLStreamException {
+    private Value parseDescription(ExtendedXMLEventReader reader) throws XMLStreamException {
         Value value =  parseDescriptionContent(reader);
         XMLEvent event = reader.nextTag();
         if (!event.isEndElement())
@@ -162,19 +159,19 @@ public class XmlReader {
      * @return
      * @throws XMLStreamException
      */
-    private Value parseDescriptionContent(BiDirectionalXMEventLReader reader) throws XMLStreamException {
+    private Value parseDescriptionContent(ExtendedXMLEventReader reader) throws XMLStreamException {
         Map<QName, Value> found = new HashMap<>();
-        XMLEvent next = peekNextNonIgnorable(reader);
+        XMLEvent next = reader.peekNextNonIgnorable();
         while (next.isStartElement()) {
             next = reader.nextEvent();
             QName qn = next.asStartElement().getName();
-            XMLEvent valueEvent = peekNextNonIgnorable(reader);
+            XMLEvent valueEvent = reader.peekNextNonIgnorable();
 
             if (valueEvent.isCharacters()) {
                 found.put(qn, new SimpleValue(valueEvent.asCharacters().getData()));
                 reader.nextEvent(); // the content that was only peek
                 reader.nextTag(); // closing tag
-                next = peekNextNonIgnorable(reader);
+                next = reader.peekNextNonIgnorable();
             } else if (valueEvent.isStartElement()) {
                 if (Namespaces.RDF.equals(valueEvent.asStartElement().getName().getNamespaceURI())) {
                     switch (valueEvent.asStartElement().getName().getLocalPart()) {
@@ -182,7 +179,7 @@ public class XmlReader {
                             // TODO should test this grammar case
                             found.put(qn,parseDescription(reader));
                             reader.nextTag();
-                            next = peekNextNonIgnorable(reader);
+                            next = reader.peekNextNonIgnorable();
                             break;
                         case "Bag":
                         case "Seq":
@@ -191,7 +188,7 @@ public class XmlReader {
                             Value value =  parseArray(valueEvent.asStartElement(), reader);
                             found.put(qn,value);
                             reader.nextTag();
-                            next = peekNextNonIgnorable(reader);
+                            next = reader.peekNextNonIgnorable();
                             break;
                         default:
                             throw forge("Unknown description element: " + valueEvent.asStartElement().getName(),valueEvent.getLocation());
@@ -203,9 +200,9 @@ public class XmlReader {
                 throw forge("Not implemented B : "+valueEvent,valueEvent.getLocation());
             }
         }
-        if (found.containsKey(Name.Q.XML_LANG)) {
+        if (found.containsKey(Name.Q.RDF_VALUE)) {
             // description of a value
-            Value value = found.remove(Name.Q.XML_LANG);
+            Value value = found.remove(Name.Q.RDF_VALUE);
             found.forEach((key,val) -> value.addQualifier(new Name(key), ((SimpleValue)val).getContent()));
             return value;
         } else {
@@ -217,7 +214,7 @@ public class XmlReader {
     }
 
 
-    private ArrayValue parseArray(StartElement se, BiDirectionalXMEventLReader reader) throws XMLStreamException {
+    private ArrayValue parseArray(StartElement se, ExtendedXMLEventReader reader) throws XMLStreamException {
         ArrayValue<Value> array;
         if ("Seq".equals(se.getName().getLocalPart()))
             array = new OrderedArray<>();
@@ -230,7 +227,7 @@ public class XmlReader {
         // read the list
         XMLEvent next = reader.nextTag();
         while (next.isStartElement() && "li".equals(((StartElement) next).getName().getLocalPart())) {
-            XMLEvent valueEvent = peekNextNonIgnorable(reader);
+            XMLEvent valueEvent = reader.peekNextNonIgnorable();
             if (valueEvent.isCharacters()) {
                 SimpleValue value = new SimpleValue(valueEvent.asCharacters().getData());
                 // check if lang is present
@@ -256,39 +253,8 @@ public class XmlReader {
             reader.nextTag();
             next = reader.nextTag();
         }
-        peekNextNonIgnorable(reader);
+        reader.peekNextNonIgnorable();
         return array;
-    }
-
-    private Structure parseStructure (StartElement se, BiDirectionalXMEventLReader reader) throws XMLStreamException {
-        XMLEvent next = reader.nextTag();
-        QName structName = se.getName();
-        // opening rdf:Description
-        // TODO ensure next is rdf:Description
-        // parse fields
-        next = reader.nextTag();
-        // parse fields
-        Structure struct = new Structure();
-        while (next.isStartElement()) {
-            QName fieldName = next.asStartElement().getName();
-            // TODO limited : consider the value of a field is always simple
-            String content = reader.nextEvent().asCharacters().getData();
-            struct.add(new Name(fieldName),new SimpleValue(content));
-            reader.nextTag(); // closing field element
-            next = reader.nextTag();
-        }
-        // ending the structure description
-        if (!next.isEndElement() || !Name.Q.RDF_DESCRIPTION.equals(next.asEndElement().getName())) {
-            // expect closing structure
-            throw forge("Expecting closing rdf:Description and found: "+next,next.getLocation());
-        }
-        next = reader.nextTag(); // closing rdf:Description
-        if (!next.isEndElement() || !structName.equals(next.asEndElement().getName())) {
-            // expect closing structure
-            throw forge("Expecting closing structure '"+structName.toString()+"' and found: "+next,next.getLocation());
-        }
-        reader.nextTag(); // closing struct element
-        return struct;
     }
 
     private void loadNamespaces(StartElement se, Packet packet) {
@@ -300,15 +266,6 @@ public class XmlReader {
         }
     }
 
-    private XMLEvent peekNextNonIgnorable(BiDirectionalXMEventLReader reader) throws XMLStreamException {
-        XMLEvent next = reader.peek();
-        while (next.isCharacters() && next.asCharacters().isWhiteSpace()) {
-            reader.nextEvent();
-            next = reader.peek();
-        }
-        return next;
-    }
-
     private XMLStreamException forge (String message, Location location) {
         return new XMLStreamException(String.format("%s at %d:%d(%d)",
                 message,
@@ -316,6 +273,5 @@ public class XmlReader {
                 location.getColumnNumber(),
                 location.getCharacterOffset()));
     }
-
 
 }

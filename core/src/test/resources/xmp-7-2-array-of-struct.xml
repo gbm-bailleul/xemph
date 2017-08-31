@@ -4,22 +4,18 @@
         <xmpMM:Pantry>
             <rdf:Bag>
                 <rdf:li>
-                    <xmpTPg:MaxPageSize>
                         <rdf:Description>
                             <stDim:h>11.0</stDim:h>
                             <stDim:w>8.5</stDim:w>
                             <stDim:unit>inch</stDim:unit>
                         </rdf:Description>
-                    </xmpTPg:MaxPageSize>
                 </rdf:li>
                 <rdf:li>
-                    <xmpTPg:MaxPageSize>
                         <rdf:Description>
                             <stDim:h>13.0</stDim:h>
                             <stDim:w>8.5</stDim:w>
                             <stDim:unit>cm</stDim:unit>
                         </rdf:Description>
-                    </xmpTPg:MaxPageSize>
                 </rdf:li>
             </rdf:Bag>
         </xmpMM:Pantry>
