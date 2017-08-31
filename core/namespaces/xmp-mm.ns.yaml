@@ -26,8 +26,8 @@ properties:
     type: Text
   - name: OriginalDocumentID
     type: URI
-#  - name: Pantry  TODO
-#    type: Unordered
+  - name: Pantry
+    type: Unordered
   - name: RenditionClass
     type: RenditionClass
   - name: RenditionParams

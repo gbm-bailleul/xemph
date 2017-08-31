@@ -192,6 +192,8 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
         String tmp = sb.toString();
         if (tmp.contains("P_D_F"))
             tmp = tmp.replace("P_D_F", "PDF");
+        if (tmp.endsWith("_I_D"))
+            tmp =tmp.substring(0,tmp.length()-3)+"ID";
         return tmp;
     }
 
