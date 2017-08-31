@@ -9,4 +9,4 @@ properties:
   - name: Producer
     type: AgentName
   - name: Trapped
-    type: Text # TODO should be boolean
+    type: Boolean

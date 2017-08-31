@@ -21,4 +21,8 @@ public abstract class ArrayValue<T extends Value> extends Value {
         return Collections.unmodifiableList(items);
     }
 
+    public final int size () {
+        return items.size();
+    }
+
 }

@@ -189,7 +189,10 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
             }
             sb.append(Character.toUpperCase(propertyName.charAt(i)));
         }
-        return sb.toString();
+        String tmp = sb.toString();
+        if (tmp.contains("P_D_F"))
+            tmp = tmp.replace("P_D_F", "PDF");
+        return tmp;
     }
 
 }

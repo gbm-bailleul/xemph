@@ -7,7 +7,6 @@ import net.gbmb.xemph.namespaces.DublinCore;
 import net.gbmb.xemph.values.SimpleValue;
 import net.gbmb.xemph.values.Structure;
 import net.gbmb.xemph.values.UnorderedArray;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.xml.stream.XMLStreamException;
@@ -98,12 +97,12 @@ public class TestXmlReader {
 
     @Test(expected = XMLStreamException.class)
     public void invalidArrayType () throws Exception {
-        Packet packet = load("/xmp-2-2-not-existing-list.xml");
+        load("/xmp-2-2-not-existing-list.xml");
     }
 
     @Test(expected = XMLStreamException.class)
     public void invalidArrayNamespaceType () throws Exception {
-        Packet packet = load("/xmp-2-3-not-existing-list-ns.xml");
+        load("/xmp-2-3-not-existing-list-ns.xml");
     }
 
     @Test
@@ -150,7 +149,7 @@ public class TestXmlReader {
         assertTrue(value instanceof UnorderedArray);
 
         UnorderedArray array = (UnorderedArray)value;
-        assertEquals(2,array.getItems().size()); // TODO size method on array
+        assertEquals(2,array.size());
         assertTrue(array.getItems().get(0) instanceof Structure);
         assertTrue(array.getItems().get(1) instanceof Structure);
 
