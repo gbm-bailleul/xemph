@@ -128,7 +128,7 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
         ClassMethod getPropertyType = cls.newMethod(vm.newType(Class.class), "getPropertyType");
         getPropertyType.addParameter(String.class, "propertyName");
         getPropertyType.setAccess(Access.AccessType.PUBLIC);
-//        getPropertyType.isStatic(true);
+        getPropertyType.addAnnotation(vm.newAnnotation(Override.class));
         getPropertyType.newStmt(vm.newFree("if (propertyName==null) return null"));
 
         for (Property property:ns.getProperties()) {
