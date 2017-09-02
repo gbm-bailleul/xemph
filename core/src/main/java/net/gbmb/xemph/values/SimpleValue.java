@@ -1,5 +1,6 @@
 package net.gbmb.xemph.values;
 
+import net.gbmb.xemph.InvalidTypeConvertionException;
 import net.gbmb.xemph.Value;
 
 import javax.activation.MimeType;
@@ -8,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.util.Calendar;
+import java.util.UUID;
 
 /**
  * Created by Guillaume Bailleul on 18/10/2016.
@@ -73,4 +75,12 @@ public class SimpleValue extends Value {
         return URI.create(this.content);
     }
 
+
+    public UUID asUUID () throws InvalidTypeConvertionException {
+        if (content.startsWith("uuid:")) {
+            return UUID.fromString(content.substring(5));
+        } else {
+            throw new InvalidTypeConvertionException("Cannot convert to UUID: "+content);
+        }
+    }
 }

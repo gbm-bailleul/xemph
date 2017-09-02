@@ -72,12 +72,12 @@ public class Packet {
         return properties.get(name);
     }
 
-    public Value getValue(String namespace, String localName) {
-        return getValue(new Name(namespace,localName));
-    }
-
-    public <R extends Value> R getValue(Name name, Class<R> type) {
-        return type.cast(getValue(name));
+    public SimpleValue getSimpleValue(Name name) throws InvalidTypeConvertionException {
+        try {
+            return SimpleValue.class.cast(properties.get(name));
+        } catch (ClassCastException e) {
+            throw new InvalidTypeConvertionException("Cannot convert to simple type",e);
+        }
     }
 
     public boolean contains (Name name) {
