@@ -162,9 +162,8 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
             case "URI":
             case "Boolean":
             case "RenditionClass":
-                return "SimpleValue.class";
             case "Date":
-                return "DateValue.class";
+                return "SimpleValue.class";
             case "Unordered":
                 return "UnorderedArray.class";
             case "Ordered":
