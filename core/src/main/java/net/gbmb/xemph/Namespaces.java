@@ -39,8 +39,13 @@ public class Namespaces {
         namespaceByURL.put(ns.getNamespaceURI(),ns);
     }
 
-    public String getNamespaceFor (String prefix) {
-        return prefixToNamespace.get(prefix);
+    public Namespace getNamespaceByDefaultPrefix (String prefix) {
+        String ns =  prefixToNamespace.get(prefix);
+        return namespaceByURL.get(ns);
+    }
+
+    public Namespace getNamespaceByURL (String url) {
+        return namespaceByURL.get(url);
     }
 
     public String getPrefixFor (String ns) {
@@ -52,11 +57,22 @@ public class Namespaces {
         namespaceToPrefix.put(ns,prefix);
     }
 
+    public boolean isDefined (Name name) {
+        return isDefined(name.getNamespace(),name.getLocalName());
+    }
+
     public boolean isDefined (String ns, String name) {
         Namespace namespace = namespaceByURL.get(ns);
         if (namespace==null)
             return false;
         // TODO should create namespace.isDefined(name)
         return namespace.getPropertyType(name)!=null;
+    }
+
+    public Class getType (Name name) {
+        Namespace namespace = namespaceByURL.get(name.getNamespace());
+        if (namespace==null)
+            return null; // TODO throw exception ?
+        return namespace.getPropertyType(name.getLocalName());
     }
 }
