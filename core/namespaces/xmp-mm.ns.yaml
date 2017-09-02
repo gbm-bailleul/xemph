@@ -38,15 +38,3 @@ properties:
     type: Ordered
     element: Version
 
-    element: Colorant
-  - name: Font
-    type: Unordered
-    element: Font
-  - name: MaxPageSize
-    type: Dimensions
-  - name: NPages
-    type: Integer
-  - name: PlateNames
-    type: Ordered
-    element: Text
-
