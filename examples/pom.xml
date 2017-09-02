@@ -18,5 +18,10 @@
             <artifactId>xemph-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.3</version>
+        </dependency>
     </dependencies>
 </project>

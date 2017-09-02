@@ -39,7 +39,7 @@ public class MainReader {
         System.out.println("> "+packet.getValue(DublinCore.TITLE));
 
 
-        AlternativeArray<SimpleValue> aa = packet.getValue(new Name(DublinCore.NAMESPACE_URI,"Example"),AlternativeArray.class);
+        AlternativeArray<SimpleValue> aa = (AlternativeArray)packet.getValue(new Name(DublinCore.NAMESPACE_URI,"Example"));
 
         System.out.println("example fr: "+ aa.getValue("fr-fr"));
 
