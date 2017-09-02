@@ -29,8 +29,8 @@ public class XmlReader {
         XMLInputFactory factory = XMLInputFactory.newFactory();
         factory.setProperty(XMLInputFactory.IS_COALESCING,true);
         XMLEventReader reader = factory.createXMLEventReader(input);
-        ExtendedXMLEventReader bidir = new ExtendedXMLEventReader(reader);
-        return parse(reader);
+        ExtendedXMLEventReader eReader = new ExtendedXMLEventReader(reader);
+        return parse(eReader);
     }
 
     public Packet parse(XMLEventReader externalReader) throws XMLStreamException {

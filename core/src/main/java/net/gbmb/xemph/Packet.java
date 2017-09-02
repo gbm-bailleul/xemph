@@ -72,11 +72,11 @@ public class Packet {
         return properties.get(name);
     }
 
-    public SimpleValue getSimpleValue(Name name) throws InvalidTypeConvertionException {
+    public SimpleValue getSimpleValue(Name name) throws InvalidTypeConvertException {
         try {
             return SimpleValue.class.cast(properties.get(name));
         } catch (ClassCastException e) {
-            throw new InvalidTypeConvertionException("Cannot convert to simple type",e);
+            throw new InvalidTypeConvertException("Cannot convert to simple type",e);
         }
     }
 

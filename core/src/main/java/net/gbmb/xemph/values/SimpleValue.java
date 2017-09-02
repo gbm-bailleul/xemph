@@ -1,6 +1,6 @@
 package net.gbmb.xemph.values;
 
-import net.gbmb.xemph.InvalidTypeConvertionException;
+import net.gbmb.xemph.InvalidTypeConvertException;
 import net.gbmb.xemph.Value;
 
 import javax.activation.MimeType;
@@ -76,11 +76,11 @@ public class SimpleValue extends Value {
     }
 
 
-    public UUID asUUID () throws InvalidTypeConvertionException {
+    public UUID asUUID () throws InvalidTypeConvertException {
         if (content.startsWith("uuid:")) {
             return UUID.fromString(content.substring(5));
         } else {
-            throw new InvalidTypeConvertionException("Cannot convert to UUID: "+content);
+            throw new InvalidTypeConvertException("Cannot convert to UUID: "+content);
         }
     }
 }

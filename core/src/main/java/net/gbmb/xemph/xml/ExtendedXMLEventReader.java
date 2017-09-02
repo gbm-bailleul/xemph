@@ -3,9 +3,6 @@ package net.gbmb.xemph.xml;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created by Guillaume Bailleul on 29/08/2017.

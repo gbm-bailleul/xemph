@@ -1,7 +1,5 @@
 package net.gbmb.xemph.values;
 
-import net.gbmb.xemph.Value;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
