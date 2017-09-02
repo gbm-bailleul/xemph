@@ -25,4 +25,15 @@ public abstract class ArrayValue<T extends Value> extends Value {
         return items.size();
     }
 
+    public String toString  () {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[ ");
+        items.forEach(i -> {
+            sb.append(i);
+            sb.append(", ");
+        });
+        sb.replace(sb.length()-2,sb.length()," ]");
+        return sb.toString();
+    }
+
 }
