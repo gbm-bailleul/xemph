@@ -51,7 +51,6 @@
                             <url>http://www.pdfa.org/wp-content/uploads/2011/08/isartor-pdfa-2008-08-13.zip</url>
                             <unpack>true</unpack>
                             <outputDirectory>${project.build.directory}/suites/isartor</outputDirectory>
-                            <!-- TODO md5>df65b5642f33676313ebe4d5b69a3fff</md5-->
                         </configuration>
                     </execution>
                     <execution>
@@ -64,7 +63,6 @@
                             <url>http://github.com/bfosupport/pdfa-testsuite/archive/master.zip</url>
                             <unpack>true</unpack>
                             <outputDirectory>${project.build.directory}/suites/bfo</outputDirectory>
-                            <!-- TODO md5>df65b5642f33676313ebe4d5b69a3fff</md5-->
                         </configuration>
                     </execution>
                 </executions>

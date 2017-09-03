@@ -1,0 +1,13 @@
+default-prefix: xmpGImg
+uri: http://ns.adobe.com/xap/1.0/g/img/
+classname: Thumbnail
+properties:
+  - name: format
+    type: ClosedChoice
+    element: Text
+  - name: height
+    type: Integer
+  - name: width
+    type: Integer
+  - name: image
+    type: Text

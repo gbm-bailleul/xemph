@@ -10,18 +10,19 @@ import java.util.Date;
  */
 public class Converter {
 
-/*
-    public <T extends Value> T convert(Value original, Class<T> target) {
-        throw new IllegalArgumentException("Not implemented convert from " + original.getClass() + " to " + target);
-    }
-*/
+    private static final String DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ssX";
+
+    private static ThreadLocal<SimpleDateFormat> dateFormater = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        public SimpleDateFormat initialValue() {
+            return new SimpleDateFormat(DATE_FORMAT);
+        }
+    };
 
     public static  <T> T convert(SimpleValue original, Class<T> target) {
         if (target==Calendar.class) {
-            // TODO optimize (multi thread)
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ssX");
             try {
-                Date date = sdf.parse(original.getContent());
+                Date date = dateFormater.get().parse(original.getContent());
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(date);
                 return target.cast(cal);

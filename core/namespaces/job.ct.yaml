@@ -1,0 +1,11 @@
+default-prefix: stJob
+uri: http://ns.adobe.com/xap/1.0/sType/Job#
+classname: Job
+properties:
+  - name: id
+    type: Text
+  - name: name
+    type: Text
+  - name: url
+    type: URL
+

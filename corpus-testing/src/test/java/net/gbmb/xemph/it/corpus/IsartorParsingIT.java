@@ -15,7 +15,6 @@ import java.util.List;
 public class IsartorParsingIT extends AbstractParsing {
 
 
-    // TODO
     private static File root = new File("target/suites/isartor/Isartor testsuite/PDFA-1b");
 
 

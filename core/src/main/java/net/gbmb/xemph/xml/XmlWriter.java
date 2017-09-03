@@ -18,6 +18,8 @@ import java.util.Map;
  */
 public class XmlWriter {
 
+    private static final String DEFAULT_ABOUT = "";
+
     private boolean simpleValueAsAttribute = false;
 
     private boolean groupRdfDescription = true;
@@ -41,6 +43,7 @@ public class XmlWriter {
     public void write (Packet packet, OutputStream output) throws IOException {
         try {
             XMLOutputFactory factory = XMLOutputFactory.newInstance();
+            factory.setProperty("javax.xml.stream.isRepairingNamespaces",true);
             XMLStreamWriter writer = factory.createXMLStreamWriter(output);
             // start document
             writer.writeStartDocument();
@@ -69,13 +72,13 @@ public class XmlWriter {
         if (groupRdfDescription) {
             // all properties will be in same rdf:Description
             writer.writeStartElement(Namespaces.RDF,"Description");
-            writer.writeAttribute(Namespaces.RDF,"about",""); // TODO where to find about value
+            writer.writeAttribute(Namespaces.RDF,"about",DEFAULT_ABOUT);
         }
         for (Name name: packet.getPropertiesNames()) {
             if (!groupRdfDescription) {
                 // one property description for each property
                 writer.writeStartElement(Namespaces.RDF,"Description");
-                writer.writeAttribute(Namespaces.RDF,"about",""); // TODO where to find about value
+                writer.writeAttribute(Namespaces.RDF,"about","");
             }
             // the value
             Value value = packet.getValue(name);
@@ -102,13 +105,13 @@ public class XmlWriter {
         if (value.hasQualifiers()) {
             writeSimpleValueWithQualifiers(name,value,writer);
         } else {
-            // write very simple value
-            // TODO handle xml markup in value (7.5 example 3)
+            // write simple value
             if (simpleValueAsAttribute) {
                 // write value as attribute when possible
                 writer.writeEmptyElement(name.getNamespace(),name.getLocalName());
                 writer.writeAttribute(Namespaces.RDF,"resource",value.getContent());
             } else {
+                // simple value as element
                 writer.writeStartElement(name.getNamespace(),name.getLocalName());
                 writer.writeCharacters(value.getContent());
                 writer.writeEndElement();
@@ -162,12 +165,12 @@ public class XmlWriter {
                 writer.writeAttribute(Namespaces.XML,"lang",value.getXmlLang());
             }
             if (!value.hasQualifiers()) {
-                writer.writeCharacters(((SimpleValue)value).getContent()); // TODO other types than simple text
+                writer.writeCharacters(((SimpleValue)value).getContent());
             } else {
                 // display qualifiers
                 writer.writeStartElement(Namespaces.RDF,"Description");
                 writer.writeStartElement(Namespaces.RDF,"Value");
-                writer.writeCharacters(((SimpleValue)value).getContent()); // TODO other types than simple text
+                writer.writeCharacters(((SimpleValue)value).getContent());
                 writer.writeEndElement();
                 // the qualifiers
                 for (Map.Entry<Name,String> entry: value.getQualifiers().entrySet()) {

@@ -1,0 +1,8 @@
+default-prefix: xmpBJ
+uri: http://ns.adobe.com/xap/1.0/bj/
+classname: XmpBasicJob
+properties:
+  - name: JobRef
+    type: Unordered
+    element: Job
+

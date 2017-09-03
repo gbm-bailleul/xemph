@@ -1,0 +1,15 @@
+default-prefix: stVer
+uri: http://ns.adobe.com/xap/1.0/sType/Version#
+classname: Version
+properties:
+  - name: comments
+    type: Text
+  - name: event
+    type: ResourceEvent
+  - name: modifier
+    type: ProperName
+  - name: modifyDate
+    type: Date
+  - name: version
+    type: Text
+

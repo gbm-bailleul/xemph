@@ -65,7 +65,6 @@ public class Namespaces {
         Namespace namespace = namespaceByURL.get(ns);
         if (namespace==null)
             return false;
-        // TODO should create namespace.isDefined(name)
         return namespace.getPropertyType(name)!=null;
     }
 

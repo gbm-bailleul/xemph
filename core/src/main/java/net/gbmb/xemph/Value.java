@@ -8,7 +8,6 @@ import java.util.Map;
  */
 public abstract class Value {
 
-    // TODO should be any value
     private String xmlLang;
 
     private Map<Name,String> qualifiers = new HashMap<>();

@@ -2,6 +2,36 @@ default-prefix: stRef
 uri: http://ns.adobe.com/xap/1.0/sType/ResourceRef#
 classname: ResourceRef
 properties:
+  - name: alternatePaths
+    type: Unordered
+    element: URI
   - name: documentID
     type: URI
-# TODO complete XMP part 2 1.2.4.1
+  - name: filePath
+    type: URI
+  - name: fromPart
+    type: Part
+  - name: instanceID
+    type: URI
+  - name: lastModifyDate
+    type: Date
+  - name: manager
+    type: AgentName
+  - name: managerVariant
+    type: Text
+  - name: manageTo
+    type: URI
+  - name: manageUI
+    type: URI
+  - name: maskMarkers
+    type: ClosedChoice
+  - name: partMapping
+    type: Text
+  - name: renditionClass
+    type: RenditionClass
+  - name: renditionParams
+    type: Text
+  - name: toPart
+    type: Part
+  - name: versionID
+    type: Text

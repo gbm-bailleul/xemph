@@ -1,0 +1,31 @@
+default-prefix: xmpG
+uri: http://ns.adobe.com/xap/1.0/g/
+classname: Colorant
+properties:
+  - name: A
+    type: Integer
+  - name: B
+    type: Integer
+  - name: L
+    type: Real
+  - name: black
+    type: Real
+  - name: cyan
+    type: Real
+  - name: magenta
+    type: Real
+  - name: yellow
+    type: Real
+  - name: blue
+    type: Integer
+  - name: green
+    type: Integer
+  - name: red
+    type: Integer
+  - name: mode
+    type: ClosedChoice # CMYK LAB RGB
+  - name: swatchName
+    type: Text
+  - name: type
+    type: ClosedChoice # PROCESS SPOT
+

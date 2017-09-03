@@ -153,6 +153,7 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
     private String getTypeClass (String typeName) throws MojoExecutionException {
         switch (typeName) {
             case "Text":
+            case "String":
             case "OpenChoice":
             case "ClosedChoice":
             case "MIME":
@@ -160,9 +161,13 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
             case "Real":
             case "Integer":
             case "URI":
+            case "URL":
             case "Boolean":
             case "RenditionClass":
             case "Date":
+            case "Part":
+            case "GUID":
+            case "ProperName":
                 return "SimpleValue.class";
             case "Unordered":
                 return "UnorderedArray.class";
@@ -174,6 +179,8 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
                 return "Dimensions.class";
             case "ResourceRef":
                 return "ResourceRef.class";
+            case "ResourceEvent":
+                return "ResourceEvent.class";
             default:
                 throw new MojoExecutionException("Unknown type: " + typeName);
         }

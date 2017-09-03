@@ -1,0 +1,22 @@
+default-prefix: stFnt
+uri: http://ns.adobe.com/xap/1.0/sType/Font#
+classname: Font
+properties:
+  - name: childFontFiles
+    type: Ordered
+    element: String
+  - name: composite
+    type: Boolean
+  - name: fontFace
+    type: Text
+  - name: fontFamily
+    type: Text
+  - name: fontFileName
+    type: String
+  - name: fontName
+    type: Text
+  - name: fontType
+    type: OpenChoice
+  - name: versioningString
+    type: String
+

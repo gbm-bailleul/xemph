@@ -14,10 +14,7 @@ import java.util.List;
 @RunWith(value = Parameterized.class)
 public class BfoParsingIT extends AbstractParsing {
 
-
-    // TODO
     private static File root = new File("target/suites/bfo/pdfa-testsuite-master");
-
 
     public BfoParsingIT(File target) {
         super(target);

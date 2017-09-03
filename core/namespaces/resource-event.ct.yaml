@@ -1,0 +1,17 @@
+default-prefix: stEvt
+uri: http://ns.adobe.com/xap/1.0/sType/ResourceEvent#
+classname: ResourceEvent
+properties:
+  - name: action
+    type: OpenChoice
+    element: Text
+  - name: changed
+    type: Text
+  - name: instanceID
+    type: GUID
+  - name: parameters
+    type: Text
+  - name: softwareAgent
+    type: AgentName
+  - name: when
+    type: Date
