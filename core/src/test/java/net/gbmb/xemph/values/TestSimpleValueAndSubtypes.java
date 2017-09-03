@@ -12,10 +12,4 @@ public class TestSimpleValueAndSubtypes {
     private static final String CONTENT = "mycontent";
 
 
-    @Test
-    public void checkURI () {
-        URIValue value = new URIValue(CONTENT);
-        assertEquals(CONTENT,value.getContent());
-    }
-
 }
