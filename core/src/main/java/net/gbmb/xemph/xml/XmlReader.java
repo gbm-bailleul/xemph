@@ -175,12 +175,14 @@ public class XmlReader {
             } else if (valueEvent.isStartElement()) {
                 if (Namespaces.RDF.equals(valueEvent.asStartElement().getName().getNamespaceURI())) {
                     switch (valueEvent.asStartElement().getName().getLocalPart()) {
+                        /*
                         case "Description":
-                            // TODO should test this grammar case
+                            // should test this grammar case, not sure it exists
                             found.put(qn,parseDescription(reader));
                             reader.nextTag();
                             next = reader.peekNextNonIgnorable();
                             break;
+                        */
                         case "Bag":
                         case "Seq":
                         case "Alt":

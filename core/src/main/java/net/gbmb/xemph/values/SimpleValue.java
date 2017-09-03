@@ -31,6 +31,21 @@ public class SimpleValue extends Value {
         return getContent();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SimpleValue that = (SimpleValue) o;
+
+        return content != null ? content.equals(that.content) : that.content == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return content != null ? content.hashCode() : 0;
+    }
+
     public Calendar asDate () {
         return Converter.convert(this,Calendar.class);
     }

@@ -4,6 +4,7 @@ import net.gbmb.xemph.Name;
 import net.gbmb.xemph.Packet;
 import net.gbmb.xemph.Value;
 import net.gbmb.xemph.namespaces.DublinCore;
+import net.gbmb.xemph.values.OrderedArray;
 import net.gbmb.xemph.values.SimpleValue;
 import net.gbmb.xemph.values.Structure;
 import net.gbmb.xemph.values.UnorderedArray;
@@ -11,6 +12,7 @@ import org.junit.Test;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.InputStream;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -137,7 +139,20 @@ public class TestXmlReader {
     public void descriptionWithNoTagInProperty () throws Exception {
         Packet packet = load("/xmp-6-array-in-property.xml");
         assertEquals(1,packet.getProperties().size());
-        // TODO drill down in structure
+        Map.Entry<Name,Value> entry = packet.getProperties().entrySet().iterator().next();
+        assertEquals(new Name("http://www.aiim.org/pdfa/ns/extension/","schemas"),entry.getKey());
+        assertTrue (entry.getValue() instanceof UnorderedArray);
+        UnorderedArray schemas = (UnorderedArray)entry.getValue();
+        assertEquals(1,schemas.size());
+        assertTrue(schemas.getItems().get(0) instanceof Structure);
+        Structure schemaElement = (Structure)schemas.getItems().get(0);
+        assertEquals(4, schemaElement.getFields().size());
+        OrderedArray<Structure> property = (OrderedArray)schemaElement.getFields().get(new Name("http://www.aiim.org/pdfa/ns/schema#","property"));
+        Structure first = property.getItem(0);
+        assertEquals(4,first.getFields().size());
+        assertEquals(new SimpleValue("Text"),first.getFields().get(new Name("http://www.aiim.org/pdfa/ns/property#","valueType")));
+        assertEquals(new SimpleValue("internal"),first.getFields().get(new Name("http://www.aiim.org/pdfa/ns/property#","category")));
+        assertEquals(new SimpleValue("Trapped"),first.getFields().get(new Name("http://www.aiim.org/pdfa/ns/property#","name")));
     }
 
     @Test
