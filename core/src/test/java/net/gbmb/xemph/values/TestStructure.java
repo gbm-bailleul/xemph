@@ -21,9 +21,4 @@ public class TestStructure {
     }
 
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void cannotModifyItems () {
-        structure.getFields().put(new Name("ns","n3"),new SimpleValue("New value"));
-    }
-
 }

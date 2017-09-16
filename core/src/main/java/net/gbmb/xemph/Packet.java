@@ -98,7 +98,7 @@ public class Packet {
             }
             if (entry.getValue() instanceof Structure) {
                 // add namespaces of structure fields
-                for (Name name1: ((Structure)entry.getValue()).getFields().keySet()) {
+                for (Name name1: ((Structure)entry.getValue()).keySet()) {
                     String ns1 = name1.getNamespace();
                     if (!result.contains(ns1)) {
                         result.add(ns1);

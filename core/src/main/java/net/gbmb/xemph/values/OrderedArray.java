@@ -8,15 +8,4 @@ import net.gbmb.xemph.Value;
 public class OrderedArray<T extends Value> extends ArrayValue<T> {
 
 
-    public T getItem (int pos) {
-        if (pos>=getItems().size()) {
-            throw new ArrayIndexOutOfBoundsException(String.format("Array only contains %d elements, expecting pos %d",
-                    getItems().size(),
-                    pos)
-            );
-        }
-        return getItems().get(pos);
-    }
-
-
 }

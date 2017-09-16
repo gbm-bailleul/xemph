@@ -140,9 +140,9 @@ public class XmlWriter {
     private void writeStructureValue(Name name, Structure value, XMLStreamWriter writer) throws XMLStreamException {
         writer.writeStartElement(name.getNamespace(),name.getLocalName());
         writer.writeStartElement(Namespaces.RDF,"Description");
-        for (Map.Entry<Name,Value> entry: value.getFields().entrySet()) {
-            writer.writeStartElement(entry.getKey().getNamespace(),entry.getKey().getLocalName());
-            writer.writeCharacters(((SimpleValue)entry.getValue()).getContent());
+        for (Name key: value.keySet()) {
+            writer.writeStartElement(key.getNamespace(),key.getLocalName());
+            writer.writeCharacters(((SimpleValue)value.getField(key)).getContent());
             writer.writeEndElement();
         }
         writer.writeEndElement();

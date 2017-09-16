@@ -36,4 +36,22 @@ public abstract class ArrayValue<T extends Value> extends Value {
         return sb.toString();
     }
 
+    public final T getItem (int pos) {
+        if (pos>=getItems().size()) {
+            throw new ArrayIndexOutOfBoundsException(String.format("Array only contains %d elements, expecting pos %d",
+                    getItems().size(),
+                    pos)
+            );
+        }
+        return items.get(pos);
+    }
+
+    public final SimpleValue getItemAsSimpleValue (int pos) {
+        return SimpleValue.class.cast(getItem(pos));
+    }
+
+    public final Structure getItemAsStructure (int pos) {
+        return Structure.class.cast(getItem(pos));
+    }
+
 }

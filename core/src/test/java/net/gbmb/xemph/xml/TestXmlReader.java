@@ -145,14 +145,14 @@ public class TestXmlReader {
         UnorderedArray schemas = (UnorderedArray)entry.getValue();
         assertEquals(1,schemas.size());
         assertTrue(schemas.getItems().get(0) instanceof Structure);
-        Structure schemaElement = (Structure)schemas.getItems().get(0);
-        assertEquals(4, schemaElement.getFields().size());
-        OrderedArray<Structure> property = (OrderedArray)schemaElement.getFields().get(new Name("http://www.aiim.org/pdfa/ns/schema#","property"));
+        Structure schemaElement = schemas.getItemAsStructure(0);
+        assertEquals(4, schemaElement.size());
+        OrderedArray<Structure> property = (OrderedArray)schemaElement.getField(new Name("http://www.aiim.org/pdfa/ns/schema#","property"));
         Structure first = property.getItem(0);
-        assertEquals(4,first.getFields().size());
-        assertEquals(new SimpleValue("Text"),first.getFields().get(new Name("http://www.aiim.org/pdfa/ns/property#","valueType")));
-        assertEquals(new SimpleValue("internal"),first.getFields().get(new Name("http://www.aiim.org/pdfa/ns/property#","category")));
-        assertEquals(new SimpleValue("Trapped"),first.getFields().get(new Name("http://www.aiim.org/pdfa/ns/property#","name")));
+        assertEquals(4,first.size());
+        assertEquals(new SimpleValue("Text"),first.getField(new Name("http://www.aiim.org/pdfa/ns/property#","valueType")));
+        assertEquals(new SimpleValue("internal"),first.getField(new Name("http://www.aiim.org/pdfa/ns/property#","category")));
+        assertEquals(new SimpleValue("Trapped"),first.getField(new Name("http://www.aiim.org/pdfa/ns/property#","name")));
     }
 
     @Test
@@ -169,7 +169,7 @@ public class TestXmlReader {
         assertTrue(array.getItems().get(1) instanceof Structure);
 
         Structure struct = (Structure)array.getItems().get(0);
-        assertEquals(3,struct.getFields().size());
+        assertEquals(3,struct.size());
         System.out.println(array.getItems().get(0));
     }
 
@@ -182,7 +182,7 @@ public class TestXmlReader {
         assertTrue(value instanceof Structure);
 
         Structure struct = (Structure)value;
-        assertEquals(3,struct.getFields().size());
+        assertEquals(3,struct.size());
         System.out.println(value);
     }
 }
