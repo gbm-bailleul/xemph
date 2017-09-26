@@ -17,6 +17,7 @@
 
 package net.gbmb.xemph.xml;
 
+import com.sun.xml.internal.txw2.output.IndentingXMLStreamWriter;
 import net.gbmb.xemph.Name;
 import net.gbmb.xemph.Namespaces;
 import net.gbmb.xemph.values.*;
@@ -41,6 +42,8 @@ public class XmlWriter {
 
     private boolean groupRdfDescription = true;
 
+    private boolean isIndent = false;
+
     public boolean isGroupRdfDescription() {
         return groupRdfDescription;
     }
@@ -57,11 +60,21 @@ public class XmlWriter {
         this.simpleValueAsAttribute = simpleValueAsAttribute;
     }
 
+    public boolean isIndent() {
+        return isIndent;
+    }
+
+    public void setIsIndent(boolean indent) {
+        this.isIndent = indent;
+    }
+
     public void write (Packet packet, OutputStream output) throws IOException {
         try {
             XMLOutputFactory factory = XMLOutputFactory.newInstance();
             factory.setProperty("javax.xml.stream.isRepairingNamespaces",true);
             XMLStreamWriter writer = factory.createXMLStreamWriter(output);
+            if (isIndent)
+                writer = new IndentingXMLStreamWriter(writer);
             // start document
             writer.writeStartDocument();
             writer.setPrefix("rdf", Namespaces.RDF);

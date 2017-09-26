@@ -78,6 +78,7 @@ public class MyMain {
         subject.addItem(v2);
 
         XmlWriter writer = new XmlWriter();
+        writer.setIsIndent(true);
         writer.setSimpleValueAsAttribute(false);
         writer.write(packet,System.out);
         System.out.flush();
