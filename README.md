@@ -1,5 +1,6 @@
-# xemph
-XMP Parser
+# Xemph: XMP Parser
+
+[![Build Status](https://travis-ci.org/gbm-bailleul/xemph.svg?branch=master)](https://travis-ci.org/gbm-bailleul/xemph)
 
 ## Abstract
 
