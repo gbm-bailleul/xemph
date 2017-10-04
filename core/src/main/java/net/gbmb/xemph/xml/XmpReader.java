@@ -28,7 +28,7 @@ import javax.xml.stream.events.XMLEvent;
 import java.io.InputStream;
 
 /**
- * Created by Guillaume Bailleul on 27/06/2017.
+ * Helper class for xmp parsing.
  */
 public class XmpReader {
 

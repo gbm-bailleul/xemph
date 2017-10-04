@@ -33,9 +33,6 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Guillaume Bailleul on 05/05/2017.
- */
 public class TestXmlReader {
 
     private XmlReader reader = new XmlReader();

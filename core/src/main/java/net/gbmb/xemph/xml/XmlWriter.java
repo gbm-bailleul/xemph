@@ -17,7 +17,6 @@
 
 package net.gbmb.xemph.xml;
 
-import com.sun.xml.internal.txw2.output.IndentingXMLStreamWriter;
 import net.gbmb.xemph.Name;
 import net.gbmb.xemph.Namespaces;
 import net.gbmb.xemph.values.*;
@@ -32,7 +31,7 @@ import java.io.OutputStream;
 import java.util.Map;
 
 /**
- * Created by Guillaume Bailleul on 18/10/2016.
+ * Class used to convert a packet in an xml stream
  */
 public class XmlWriter {
 
@@ -73,8 +72,8 @@ public class XmlWriter {
             XMLOutputFactory factory = XMLOutputFactory.newInstance();
             factory.setProperty("javax.xml.stream.isRepairingNamespaces",true);
             XMLStreamWriter writer = factory.createXMLStreamWriter(output);
-            if (isIndent)
-                writer = new IndentingXMLStreamWriter(writer);
+//            if (isIndent)
+//                writer = new IndentingXMLStreamWriter(writer);
             // start document
             writer.writeStartDocument();
             writer.setPrefix("rdf", Namespaces.RDF);

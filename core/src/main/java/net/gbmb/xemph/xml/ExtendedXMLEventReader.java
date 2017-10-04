@@ -22,7 +22,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.*;
 
 /**
- * Created by Guillaume Bailleul on 29/08/2017.
+ * Helper class for xmp parsing
  */
 class ExtendedXMLEventReader implements XMLEventReader {
 
@@ -58,30 +58,6 @@ class ExtendedXMLEventReader implements XMLEventReader {
                 throw new XMLStreamException("Next element is not a tag : "+event);
         }
         return event;
-        /*
-        while (next.isCharacters() && next.asCharacters().isWhiteSpace()) {
-            reader.nextEvent();
-            next = reader.peek();
-        }
-        return next;
-        */
-        /*
-                XMLEvent event = nextEvent();
-        while (!(event instanceof StartElement) && !(event instanceof EndElement)) {
-            if (event instanceof Characters) {
-                String data = event.asCharacters().getData();
-                if (data == null || data.length() == 0 || whiteSpacePattern.matcher(data).matches())
-                    event = nextEvent();
-                else
-                    throw new XMLStreamException("Next element is not a tag");
-            } else if (event instanceof Comment) {
-                event = nextEvent();
-            } else // found something different than tag
-                throw new XMLStreamException("Next element is not a tag : "+event);
-        }
-        return event;
-
-         */
     }
 
 

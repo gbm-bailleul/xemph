@@ -21,9 +21,6 @@ import net.gbmb.xemph.Name;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Created by Guillaume Bailleul on 02/05/2017.
- */
 public class TestStructure {
 
     public Structure structure;

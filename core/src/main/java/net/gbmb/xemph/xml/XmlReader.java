@@ -32,7 +32,9 @@ import java.io.InputStream;
 import java.util.*;
 
 /**
- * Created by Guillaume Bailleul on 21/10/2016.
+ * Main goal of this class is to convert an xml stream to an object
+ * containing all the elements and properties
+ *
  */
 public class XmlReader {
 

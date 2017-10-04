@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Guillaume Bailleul on 18/10/2016.
+ * Set of all defined namespaces.
  */
 public class Namespaces {
 

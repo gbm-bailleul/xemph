@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Guillaume Bailleul on 18/10/2016.
+ * Alternative array wrapper
  */
 public class AlternativeArray<T extends Value> extends ArrayValue<T> {
 

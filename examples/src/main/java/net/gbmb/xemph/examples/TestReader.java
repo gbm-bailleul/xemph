@@ -28,9 +28,6 @@ import net.gbmb.xemph.xml.XmlReader;
 import java.io.InputStream;
 import java.util.Map;
 
-/**
- * Created by Guillaume Bailleul on 21/10/2016.
- */
 public class TestReader {
 
 
@@ -39,37 +36,8 @@ public class TestReader {
         XmlReader reader = new XmlReader();
         Packet packet = reader.parse(is);
 
-//        System.err.flush();
-//        System.out.flush();
-//
-//        System.out.println("Namespaces");
-//        for (String ns:packet.listUsedNamespaces()) {
-//            System.out.println("      "+ns);
-//        }
-//        System.out.println("Properties");
-//        for (Map.Entry<Name,Value> entry: packet.getProperties().entrySet()) {
-//            System.out.println("     "+entry.getKey()+ " / "+entry.getValue().getClass());
-//
-//        }
-//
-//        System.out.println("> "+packet.contains(DublinCore.TITLE));
-//        System.out.println("> "+packet.getValue(DublinCore.TITLE));
-//
-//
-//        AlternativeArray<SimpleValue> aa = packet.getValue(new Name(DublinCore.NAMESPACE_URI,"Example"),AlternativeArray.class);
-//
-//        System.out.println("example fr: "+ aa.getValue("fr-fr"));
+        // TODO remove this class
 
-
-//        OrderedArray<SimpleValue> value = (OrderedArray<SimpleValue>)packet.getValue(dc.title());
-//        for (SimpleValue sv : value.getItems()) {
-//            System.out.println(">> "+sv);
-//        }
-//        System.out.println("aa "+((ParameterizedType)value.getItems().getGenericType()).getActualTypeArguments()[0]);
-
-//        System.out.println(">>>>> "+value.getItem(2));
-
-//        System.out.println("> "+packet.getValue(new Name(Namespaces.DC,"title"),OrderedArray.class));
 
     }
 }

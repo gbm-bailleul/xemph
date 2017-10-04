@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Guillaume Bailleul on 18/10/2016.
+ * The parent class for all values of a RDF property.
  */
 public abstract class Value {
 

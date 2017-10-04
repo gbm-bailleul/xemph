@@ -23,7 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by Guillaume Bailleul on 31/08/2017.
+ * Converter used for standard format conversion
  */
 public class Converter {
 
@@ -36,6 +36,13 @@ public class Converter {
         }
     };
 
+    /**
+     * Convert a SimpleValue to the expected class instance
+     * @param original
+     * @param target can be Calendar.class or Boolean.class
+     * @param <T>
+     * @return
+     */
     public static  <T> T convert(SimpleValue original, Class<T> target) {
         if (target==Calendar.class) {
             try {

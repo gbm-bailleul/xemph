@@ -28,9 +28,6 @@ import net.gbmb.xemph.xml.XmlWriter;
 
 import java.io.IOException;
 
-/**
- * Created by Guillaume Bailleul on 18/10/2016.
- */
 public class MyMain {
 
     public static void main (String [] args) throws IOException {

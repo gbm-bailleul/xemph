@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /**
- * Created by Guillaume Bailleul on 03/05/2017.
+ * Object form of a property description in yaml namespace description
  */
 public class Namespace {
 

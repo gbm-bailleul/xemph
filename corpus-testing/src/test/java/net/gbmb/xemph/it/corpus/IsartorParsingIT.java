@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by Guillaume Bailleul on 26/06/2017.
- */
 @RunWith(value = Parameterized.class)
 public class IsartorParsingIT extends AbstractParsing {
 

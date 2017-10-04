@@ -20,7 +20,7 @@ package net.gbmb.xemph.generator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Created by Guillaume Bailleul on 03/05/2017.
+ * the property description class of yaml namespace description
  */
 public class Property {
 

@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by Guillaume Bailleul on 18/10/2016.
+ * Parent class for all array values
  */
 public abstract class ArrayValue<T extends Value> extends Value {
 

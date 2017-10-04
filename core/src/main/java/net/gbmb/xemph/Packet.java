@@ -24,7 +24,7 @@ import net.gbmb.xemph.values.Structure;
 import java.util.*;
 
 /**
- * Created by Guillaume Bailleul on 18/10/2016.
+ * The object form of an xmp description
  */
 public class Packet {
 

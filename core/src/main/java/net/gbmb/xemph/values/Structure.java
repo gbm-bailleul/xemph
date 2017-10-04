@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by Guillaume Bailleul on 18/10/2016.
+ * Structure wrapper
  */
 public class Structure extends Value {
 

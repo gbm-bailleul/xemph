@@ -33,9 +33,6 @@ import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.util.Map;
 
-/**
- * Created by Guillaume Bailleul on 27/06/2017.
- */
 public abstract class AbstractParsing {
 
     private File target;

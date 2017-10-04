@@ -31,7 +31,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 /**
- * Created by Guillaume Bailleul on 31/08/2017.
+ * Example of xmp extraction from a PDF, using PDFBox
  */
 public class PDFExtractor {
 

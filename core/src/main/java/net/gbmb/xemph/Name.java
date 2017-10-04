@@ -20,7 +20,7 @@ package net.gbmb.xemph;
 import javax.xml.namespace.QName;
 
 /**
- * Created by Guillaume Bailleul on 18/10/2016.
+ * Convenience class to handle naming of elements
  */
 public class Name {
 

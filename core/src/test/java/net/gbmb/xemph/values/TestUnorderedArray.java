@@ -21,9 +21,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by Guillaume Bailleul on 02/05/2017.
- */
 public class TestUnorderedArray {
 
     private UnorderedArray<SimpleValue> array = new UnorderedArray<>();

@@ -24,9 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by Guillaume Bailleul on 27/06/2017.
- */
 public class ParsingHelper {
 
     protected static Collection<Object[]> data (File root, List<String> skipList) {

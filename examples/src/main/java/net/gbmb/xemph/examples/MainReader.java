@@ -28,9 +28,6 @@ import net.gbmb.xemph.xml.XmlReader;
 import java.io.InputStream;
 import java.util.Map;
 
-/**
- * Created by Guillaume Bailleul on 21/10/2016.
- */
 public class MainReader {
 
 

@@ -18,7 +18,7 @@
 package net.gbmb.xemph.values;
 
 /**
- * Created by Guillaume Bailleul on 03/09/2017.
+ * Define all the subtypes for a SimpleValue
  */
 public enum SimpleTypes {
 

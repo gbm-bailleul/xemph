@@ -29,7 +29,7 @@ import java.util.Calendar;
 import java.util.UUID;
 
 /**
- * Created by Guillaume Bailleul on 18/10/2016.
+ * String wrapper (and all subtypes)
  */
 public class SimpleValue extends Value {
 

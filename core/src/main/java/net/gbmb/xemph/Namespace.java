@@ -18,7 +18,7 @@
 package net.gbmb.xemph;
 
 /**
- * Created by Guillaume Bailleul on 07/03/2017.
+ * Superclass for namespaces
  */
 public abstract class Namespace {
 
