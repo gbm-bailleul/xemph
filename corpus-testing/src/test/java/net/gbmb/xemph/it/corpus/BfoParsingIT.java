@@ -40,16 +40,13 @@ public class BfoParsingIT extends AbstractParsing {
 
     @Parameterized.Parameters(name="{index}: {0}")
     public static Collection<Object[]> data () throws Exception {
-//        return ParsingHelper.data(root,getSkipFile());
-        Collection<Object[]> result = new ArrayList<>(1);
+         Collection<Object[]> result = new ArrayList<>(1);
         result.add(new Object[] {new File("target/suites/bfo/pdfa-testsuite-master/pdfa2-6-3-3-bfo-t01-fail.pdf")});
         return result;
     }
 
     public static List<String> getSkipFile () {
         List<String> ret = new ArrayList<>();
-  //      ret.add("isartor-6-1-3-t02-fail-a.pdf"); // encrypted PDF
-    //    ret.add("isartor-6-7-2-t01-fail-a.pdf"); // no xmp in PDF
         return ret;
     }
 
