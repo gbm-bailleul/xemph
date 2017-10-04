@@ -1,6 +1,8 @@
 # Xemph: XMP Parser
 
 [![Build Status](https://travis-ci.org/gbm-bailleul/xemph.svg?branch=master)](https://travis-ci.org/gbm-bailleul/xemph)
+[![Codecov](https://img.shields.io/codecov/c/github/gbm-bailleul/xemph.svg)](https://codecov.io/gh/gbm-bailleul/xemph/)
+[![License](https://img.shields.io/github/license/gbm-bailleul/xemph.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## Abstract
 
