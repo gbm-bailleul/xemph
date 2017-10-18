@@ -72,17 +72,11 @@ public class XmlWriter {
             XMLOutputFactory factory = XMLOutputFactory.newInstance();
             factory.setProperty("javax.xml.stream.isRepairingNamespaces",true);
             XMLStreamWriter writer = factory.createXMLStreamWriter(output);
-//            if (isIndent)
-//                writer = new IndentingXMLStreamWriter(writer);
             // start document
             writer.writeStartDocument();
-            writer.setPrefix("rdf", Namespaces.RDF);
-            writer.writeStartElement(Namespaces.RDF,"RDF");
-            writer.writeNamespace("rdf",Namespaces.RDF);
             // write content
-            writeContent (packet, writer);
+            writePacket(packet,writer);
             // end document
-            writer.writeEndElement();
             writer.writeEndDocument();
             writer.flush();
             writer.close();
@@ -90,6 +84,17 @@ public class XmlWriter {
         } catch (XMLStreamException e) {
             throw new IOException("Failed to write output",e);
         }
+    }
+
+    public void writePacket (Packet packet, XMLStreamWriter writer) throws XMLStreamException {
+        // start document
+        writer.writeStartElement(Namespaces.RDF,"RDF");
+        writer.setPrefix("rdf", Namespaces.RDF);
+        writer.writeNamespace("rdf",Namespaces.RDF);
+        // write content
+        writeContent (packet, writer);
+        // end
+        writer.writeEndElement();
     }
 
     private void writeContent(Packet packet, XMLStreamWriter writer)  throws XMLStreamException {
