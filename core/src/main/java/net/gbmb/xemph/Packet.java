@@ -68,12 +68,12 @@ public class Packet {
         addProperty(name,value,false);
     }
 
-    public void addProperty (Name name, String value) {
-        addProperty(name,new SimpleValue(value));
+    public void addProperty (Name name, Object value) {
+        addProperty(name,SimpleValue.parse(value));
     }
 
-    public void addProperty (Name name, String value, boolean replace) {
-        addProperty(name,new SimpleValue(value),replace);
+    public void addProperty (Name name, Object value, boolean replace) {
+        addProperty(name,SimpleValue.parse(value),replace);
     }
 
     public Collection<Name> getPropertiesNames () {

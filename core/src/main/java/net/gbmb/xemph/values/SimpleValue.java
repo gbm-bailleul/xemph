@@ -25,13 +25,25 @@ import javax.activation.MimeTypeParseException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 /**
  * String wrapper (and all subtypes)
  */
 public class SimpleValue extends Value {
+
+    private static final String DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ssX";
+
+    private static ThreadLocal<SimpleDateFormat> dateFormater = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        public SimpleDateFormat initialValue() {
+            return new SimpleDateFormat(DATE_FORMAT);
+        }
+    };
 
     private String content;
 
@@ -64,11 +76,11 @@ public class SimpleValue extends Value {
     }
 
     public Calendar asDate () {
-        return Converter.convert(this,Calendar.class);
+        return convert(this,Calendar.class);
     }
 
     public boolean asBoolean () {
-        return Converter.convert(this, Boolean.class);
+        return convert(this, Boolean.class);
     }
 
     public String asString () {
@@ -115,4 +127,51 @@ public class SimpleValue extends Value {
             throw new InvalidTypeConvertException("Cannot convert to UUID: "+content);
         }
     }
+
+
+
+    /**
+     * Convert a SimpleValue to the expected class instance
+     * @param original
+     * @param target can be Calendar.class or Boolean.class
+     * @param <T>
+     * @return
+     */
+    public static  <T> T convert(SimpleValue original, Class<T> target) {
+        if (target==Calendar.class) {
+            try {
+                Date date = dateFormater.get().parse(original.getContent());
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                return target.cast(cal);
+            } catch (ParseException e) {
+                throw new IllegalArgumentException(e.getMessage());
+            }
+        } else if (target == Boolean.class) {
+            return target.cast(Boolean.valueOf(original.getContent()));
+        } else {
+            throw new IllegalArgumentException("Not yet implemented convert from " + original.getClass() + " to " + target);
+        }
+
+    }
+
+    /**
+     * Create a SimpleValue based on the value parameter. When no converter is defined for class of the value
+     * parameter, the toString method is used.
+     * @param value the value to parse
+     * @return
+     */
+    public static SimpleValue parse(Object value) {
+        if (value instanceof String) {
+            return new SimpleValue((String)value);
+        } else if (value instanceof Date) {
+            return new SimpleValue(dateFormater.get().format((Date)value));
+        } else if (value instanceof Calendar) {
+            return new SimpleValue(dateFormater.get().format(((Calendar)value).getTime()));
+        } else {
+            // default
+            return new SimpleValue(value.toString());
+        }
+    }
+
 }
