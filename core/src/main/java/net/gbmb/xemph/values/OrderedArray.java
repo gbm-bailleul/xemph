@@ -24,5 +24,18 @@ import net.gbmb.xemph.Value;
  */
 public class OrderedArray<T extends Value> extends ArrayValue<T> {
 
+    /**
+     * Create an {@link OrderedArray} of {@link SimpleValue}.
+     * Each parameter will be an element of the {@link OrderedArray}
+     * @param values
+     * @return
+     */
+    public static OrderedArray<SimpleValue> parse (Object ... values) {
+        OrderedArray<SimpleValue> ret = new OrderedArray<>();
+        for (Object value: values) {
+            ret.addItem(SimpleValue.parse(value));
+        }
+        return ret;
+    }
 
 }

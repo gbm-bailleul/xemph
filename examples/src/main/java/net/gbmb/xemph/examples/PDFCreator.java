@@ -18,6 +18,7 @@ package net.gbmb.xemph.examples;
 
 import net.gbmb.xemph.Packet;
 import net.gbmb.xemph.namespaces.DublinCore;
+import net.gbmb.xemph.values.UnorderedArray;
 import net.gbmb.xemph.xml.XmpWriter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -38,6 +39,7 @@ public class PDFCreator {
         Packet packet = new Packet();
         packet.addProperty(DublinCore.CREATOR,"Guillaume Bailleul");
         packet.addProperty(DublinCore.DATE, new Date());
+        packet.addProperty(DublinCore.PUBLISHER, UnorderedArray.parse("publisher1","publisher2","publisher3","publisher4"));
 
         XmpWriter writer = new XmpWriter();
         byte [] xmpContent = writer.write(packet);

@@ -34,6 +34,11 @@ public abstract class ArrayValue<T extends Value> extends Value {
         items.add(item);
     }
 
+    public void addItems(T ... values)  {
+        for (T value: values)
+            addItem(value);
+    }
+
     public final List<T> getItems () {
         return Collections.unmodifiableList(items);
     }
@@ -70,5 +75,6 @@ public abstract class ArrayValue<T extends Value> extends Value {
     public final Structure getItemAsStructure (int pos) {
         return Structure.class.cast(getItem(pos));
     }
+
 
 }

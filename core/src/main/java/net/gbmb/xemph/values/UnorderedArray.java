@@ -31,4 +31,18 @@ public class UnorderedArray<T extends Value> extends ArrayValue<T> {
             return;
         super.addItem(item);
     }
+
+    /**
+     * Create an {@link UnorderedArray} of {@link SimpleValue}.
+     * Each parameter will be an element of the {@link UnorderedArray}
+     * @param values
+     * @return
+     */
+    public static UnorderedArray<SimpleValue> parse (Object ... values) {
+        UnorderedArray<SimpleValue> ret = new UnorderedArray<>();
+        for (Object value: values) {
+            ret.addItem(SimpleValue.parse(value));
+        }
+        return ret;
+    }
 }
