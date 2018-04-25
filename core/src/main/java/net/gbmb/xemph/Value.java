@@ -33,11 +33,6 @@ public abstract class Value {
         qualifiers.put(name,qualifier);
     }
 
-    public Value qualifier(Name name, String qualifier) {
-        addQualifier(name,qualifier);
-        return this;
-    }
-
     public boolean hasQualifiers() {
         return qualifiers.size()>0;
     }

@@ -17,6 +17,7 @@
 
 package net.gbmb.xemph;
 
+import net.gbmb.xemph.values.OrderedArray;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -63,6 +64,31 @@ public class TestPacket {
     @Test(expected = IllegalArgumentException.class)
     public void cannotCreatePropertyWithNoValue () {
         packet.addProperty(name,(Value)null);
+    }
+
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void ensurePropertiesNotMutable () {
+        packet.addProperty(name,"my value");
+        packet.getProperties().remove(name);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void ensurePropertiesNameNotMutable () {
+        packet.addProperty(name,"my value");
+        packet.getPropertiesNames().remove(name);
+    }
+
+    @Test(expected = InvalidTypeConvertException.class)
+    public void ensureSimpleCastOfArrayFails () throws InvalidTypeConvertException{
+        packet.addProperty(name,new OrderedArray<>());
+        packet.getSimpleValue(name);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void ernsureNamespaceListNotMutable () {
+        packet.addProperty(name,"my value");
+        packet.listUsedNamespaces().remove(0);
     }
 
 }

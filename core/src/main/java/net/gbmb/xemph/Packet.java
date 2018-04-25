@@ -35,7 +35,7 @@ public class Packet {
     private Namespaces namespaces = new Namespaces();
 
     public Map<Name, Value> getProperties() {
-        return properties;
+        return Collections.unmodifiableMap(properties);
     }
 
     public String getTargetResource() {
@@ -77,7 +77,7 @@ public class Packet {
     }
 
     public Collection<Name> getPropertiesNames () {
-        return properties.keySet();
+        return Collections.unmodifiableCollection(properties.keySet());
     }
 
     /**
@@ -140,7 +140,7 @@ public class Packet {
                 }
             }
         }
-        return result;
+        return Collections.unmodifiableCollection(result);
     }
 
 
