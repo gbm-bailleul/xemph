@@ -87,7 +87,6 @@ public class Name {
 
         public static final QName XMP_META = new QName(Namespaces.ADOBE_META,"xmpmeta");
 
-        private Q () {}
     }
 
 }

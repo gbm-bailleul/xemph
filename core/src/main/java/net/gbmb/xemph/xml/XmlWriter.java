@@ -112,7 +112,7 @@ public class XmlWriter {
             if (!groupRdfDescription) {
                 // one property description for each property
                 writer.writeStartElement(Namespaces.RDF,"Description");
-                writer.writeAttribute(Namespaces.RDF,"about","");
+                writer.writeAttribute(Namespaces.RDF,"about",DEFAULT_ABOUT);
             }
             // the value
             Value value = packet.getValue(name);
