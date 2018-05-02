@@ -61,6 +61,7 @@
         <module>examples</module>
         <module>generator</module>
         <module>corpus-testing</module>
+        <module>service</module>
     </modules>
 
     <dependencies>
