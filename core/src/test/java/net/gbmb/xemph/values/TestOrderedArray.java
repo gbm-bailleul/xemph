@@ -25,7 +25,7 @@ public class TestOrderedArray {
 
     private OrderedArray<SimpleValue> array = new OrderedArray<>();
 
-    public TestOrderedArray()  {
+    public void init()  {
         array.addItem(new SimpleValue("value1"));
         array.addItem(new SimpleValue("value2"));
         array.addItem(new SimpleValue("value3"));
@@ -33,19 +33,36 @@ public class TestOrderedArray {
 
     @Test(expected = UnsupportedOperationException.class)
     public void cannotModifyItems () {
+        init();
         array.getItems().add(new SimpleValue("value"));
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void cannotRetrieveNonExistingItem () {
+        init();
         array.getItem(3);
     }
 
     @Test
     public void canHaveSameElementMultipleTime () {
+        init();
         array.addItem(array.getItem(0));
         assertEquals(4,array.getItems().size());
         assertEquals(array.getItem(0),array.getItem(3));
+    }
+
+    @Test
+    public void testPossibleParse () throws Exception {
+        String [] initials = new String [] { "value1", "value2", "value3", "value1"};
+        OrderedArray<SimpleValue> result = OrderedArray.parse(initials);
+        assertEquals(4,result.size());
+        assertEquals("value1",result.getItemAsSimpleValue(0).asString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseWithNullElement () throws Exception {
+        String [] initials = new String [] { "value1", null};
+        OrderedArray<SimpleValue> result = OrderedArray.parse(initials);
     }
 
 }

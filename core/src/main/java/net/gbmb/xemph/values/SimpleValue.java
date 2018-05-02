@@ -137,7 +137,7 @@ public class SimpleValue extends Value {
      * @param <T>
      * @return
      */
-    public static  <T> T convert(SimpleValue original, Class<T> target) {
+    private static  <T> T convert(SimpleValue original, Class<T> target) {
         if (target==Calendar.class) {
             try {
                 Date date = dateFormater.get().parse(original.getContent());
@@ -162,7 +162,9 @@ public class SimpleValue extends Value {
      * @return
      */
     public static SimpleValue parse(Object value) {
-        if (value instanceof String) {
+        if (value == null) {
+            throw new IllegalArgumentException("Null value not accepted");
+        } else if (value instanceof String) {
             return new SimpleValue((String)value);
         } else if (value instanceof Date) {
             return new SimpleValue(dateFormater.get().format((Date)value));

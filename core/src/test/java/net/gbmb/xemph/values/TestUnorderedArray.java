@@ -19,7 +19,7 @@ package net.gbmb.xemph.values;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class TestUnorderedArray {
 
@@ -41,5 +41,21 @@ public class TestUnorderedArray {
         array.addItem(array.getItems().get(0));
         assertEquals(3,array.getItems().size());
     }
+
+    @Test
+    public void testPossibleParse () throws Exception {
+        String [] initials = new String [] { "value1", "value2", "value3", "value1"};
+        UnorderedArray<SimpleValue> result = UnorderedArray.parse(initials);
+        // same value twice
+        assertEquals(3,result.size());
+        assertTrue(result.getItems().contains(new SimpleValue("value1")));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseWithNullElement () throws Exception {
+        String [] initials = new String [] { "value1", null};
+        UnorderedArray.parse(initials);
+    }
+
 
 }

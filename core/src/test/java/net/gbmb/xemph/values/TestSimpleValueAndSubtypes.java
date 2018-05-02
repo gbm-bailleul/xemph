@@ -19,11 +19,103 @@ package net.gbmb.xemph.values;
 
 import org.junit.Test;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import static org.junit.Assert.*;
 
 public class TestSimpleValueAndSubtypes {
 
-    private static final String CONTENT = "mycontent";
+    private static final String DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ssX";
+
+    private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+
+//    private static final String CONTENT = "mycontent";
+
+    public SimpleValue prepare (Object CONTENT) throws Exception {
+        SimpleValue sv1 = SimpleValue.parse(CONTENT);
+        SimpleValue sv2 = SimpleValue.parse(CONTENT);
+        assertNotEquals(CONTENT,sv1);
+        assertEquals(sv1,sv2);
+        return sv1;
+    }
+
+
+    @Test
+    public void testString () throws Exception {
+        String content = "mycontent";
+        SimpleValue sv1 = prepare(content);
+        assertEquals(content.toString(),sv1.getContent());
+        assertEquals(content,sv1.toString());
+        assertEquals(content,sv1.asString());
+    }
+
+    @Test
+    public void testInteger () throws Exception {
+        Integer content = new Integer(14);
+        SimpleValue sv1 = prepare(content);
+        assertEquals(content.toString(),sv1.getContent());
+        assertEquals(content.toString(),sv1.toString());
+        assertEquals(content.toString(),sv1.asString());
+        assertEquals(content.intValue(),sv1.asInteger());
+    }
+
+    @Test
+    public void testLong () throws Exception {
+        Long content = new Long(14);
+        SimpleValue sv1 = prepare(content);
+        assertEquals(content.toString(),sv1.getContent());
+        assertEquals(content.toString(),sv1.toString());
+        assertEquals(content.toString(),sv1.asString());
+        assertEquals(content.longValue(),sv1.asLong());
+        assertEquals(content.intValue(),sv1.asInteger());
+    }
+
+    @Test
+    public void testBooleanTrue () throws Exception {
+        Boolean content = Boolean.TRUE;
+        SimpleValue sv1 = prepare(content);
+        assertEquals(content.toString(),sv1.getContent());
+        assertEquals(content.toString(),sv1.toString());
+        assertEquals(content.toString(),sv1.asString());
+        assertEquals(content,sv1.asBoolean());
+    }
+
+    @Test
+    public void testBooleanFalse () throws Exception {
+        Boolean content = Boolean.FALSE;
+        SimpleValue sv1 = prepare(content);
+        assertEquals(content.toString(),sv1.getContent());
+        assertEquals(content.toString(),sv1.toString());
+        assertEquals(content.toString(),sv1.asString());
+        assertEquals(content,sv1.asBoolean());
+    }
+
+    @Test
+    public void testCalendar () throws Exception {
+        Calendar content = Calendar.getInstance();
+        content.set(Calendar.MILLISECOND,0);
+        String string = sdf.format(content.getTime());
+        SimpleValue sv1 = prepare(content);
+        assertEquals(string,sv1.getContent());
+        assertEquals(string,sv1.toString());
+        assertEquals(string,sv1.asString());
+        assertEquals(content,sv1.asDate());
+    }
+
+    @Test
+    public void testDate () throws Exception {
+        Calendar content = Calendar.getInstance();
+        content.set(Calendar.MILLISECOND,0);
+        Date date = content.getTime();
+        String string = sdf.format(date);
+        SimpleValue sv1 = prepare(date);
+        assertEquals(string,sv1.getContent());
+        assertEquals(string,sv1.toString());
+        assertEquals(string,sv1.asString());
+        assertEquals(date,sv1.asDate().getTime());
+    }
 
 
 }
