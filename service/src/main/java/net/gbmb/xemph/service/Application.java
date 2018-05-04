@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import net.gbmb.xemph.Packet;
 import net.gbmb.xemph.xml.XmpReader;
-import org.apache.pdfbox.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.io.RandomAccessFile;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.context.annotation.Bean;
@@ -16,14 +19,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLStreamException;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 @Controller
 @EnableAutoConfiguration
 public class Application {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Bean
     public ObjectMapper objectMapper () {
@@ -31,6 +33,9 @@ public class Application {
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS,false);
         return mapper;
     }
+
+    @Value("${storage.dir:/tmp}")
+    private File storageDir;
 
     @RequestMapping("/")
     @ResponseBody
@@ -48,25 +53,63 @@ public class Application {
             produces = "application/json",
             method = RequestMethod.POST)
     @ResponseBody
-    ExtractionResult extract (HttpServletRequest request) throws IOException {
+    ExtractionResult extract (
+            HttpServletRequest request,
+            @RequestParam(name = "store", defaultValue = "false") boolean store,
+            @RequestParam(name = "key", defaultValue = "<NOKEY>") String key
+    ) throws IOException {
+        byte [] xmp = extract(request.getInputStream());
+        // parse
+        ExtractionResult result =  new ExtractionResult();
+        try {
+            XmpReader xmpReader = new XmpReader();
+            Packet packet = xmpReader.parse(new ByteArrayInputStream(xmp));
+            // store if needed
+            result.setPacket(packet);
+        } catch (XMLStreamException e) {
+            result.setFailingException(e);
+        }
+        if (store) store(xmp,result,key);
+        return result;
+    }
+
+    private byte [] extract (InputStream pdfFile) throws IOException {
         // copy in tmp (TODO very ugly)
         File tmp = File.createTempFile("xemph-","-service");
-        FileOutputStream fos = new FileOutputStream(tmp);
-        IOUtils.copy(request.getInputStream(),fos);
-        IOUtils.closeQuietly(fos);
-        // parse PDF
-        RandomAccessFile raf = new RandomAccessFile(tmp,"r");
-        PDFParser parser = new PDFParser(raf);
-        parser.parse();
-        // extract packet
-        PDDocument document = parser.getPDDocument();
-        InputStream xmp = document.getDocumentCatalog().getMetadata().exportXMPMetadata();
-        XmpReader xmpReader = new XmpReader();
-        try {
-            Packet packet = xmpReader.parse(xmp);
-            return new ExtractionResult(packet);
-        } catch (XMLStreamException e) {
-            return new ExtractionResult(e);
+        try (FileOutputStream fos = new FileOutputStream(tmp)) {
+            IOUtils.copy(pdfFile, fos);
+            fos.close();
+            // parse PDF
+            RandomAccessFile raf = new RandomAccessFile(tmp,"r");
+            PDFParser parser = new PDFParser(raf);
+            parser.parse();
+            // extract packet
+            PDDocument document = parser.getPDDocument();
+            InputStream xmp = document.getDocumentCatalog().getMetadata().exportXMPMetadata();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            IOUtils.copy(xmp,bos);
+            bos.close();
+            document.close();
+            return bos.toByteArray();
+        } finally {
+            tmp.delete();
         }
     }
+
+
+    private void store (byte [] content, ExtractionResult result, String key) throws IOException {
+        File resultDir = new File(storageDir,result.getIdentifier());
+        if (!resultDir.mkdir()) {
+            throw new IOException("Failed to create target directory: "+resultDir.getAbsolutePath());
+        }
+        try (FileOutputStream raw = new FileOutputStream(new File(resultDir,"raw.bin"))) {
+            IOUtils.write(content,raw);
+        }
+        try (FileOutputStream res = new FileOutputStream(new File(resultDir,"result.json"))) {
+            objectMapper().writeValue(res,result);
+        }
+        logger.info("Storing in {} for key '{}'",result.getIdentifier(),key);
+    }
+
+
 }
