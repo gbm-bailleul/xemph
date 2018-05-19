@@ -10,12 +10,19 @@ public class ExtractionResult {
 
     private Packet packet;
 
-    private String identifier;
-
     private boolean performed;
 
+    private String identifier;
+
     public ExtractionResult() {
-        identifier = UUID.randomUUID().toString();
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
     public Exception getFailingException() {
@@ -28,10 +35,6 @@ public class ExtractionResult {
 
     public boolean isPerformed() {
         return performed;
-    }
-
-    public String getIdentifier() {
-        return identifier;
     }
 
     public void setFailingException(Exception failingException) {

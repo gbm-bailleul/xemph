@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLStreamException;
 import java.io.*;
+import java.util.UUID;
 
 @Controller
 @EnableAutoConfiguration
@@ -36,6 +37,9 @@ public class Application {
 
     @Value("${storage.dir:/tmp}")
     private File storageDir;
+
+    @Value("${working.dir:/tmp}")
+    private File workingDir;
 
     @RequestMapping("/")
     @ResponseBody
@@ -58,9 +62,14 @@ public class Application {
             @RequestParam(name = "store", defaultValue = "false") boolean store,
             @RequestParam(name = "key", defaultValue = "<NOKEY>") String key
     ) throws IOException {
+        String identifier = UUID.randomUUID().toString();
+        logger.info("Starting request with internal id '{}' for key '{}'",identifier,key);
         byte [] xmp = extract(request.getInputStream());
+        if (store)
+            storeRaw(identifier,xmp);
         // parse
         ExtractionResult result =  new ExtractionResult();
+        result.setIdentifier(identifier);
         try {
             XmpReader xmpReader = new XmpReader();
             Packet packet = xmpReader.parse(new ByteArrayInputStream(xmp));
@@ -69,13 +78,13 @@ public class Application {
         } catch (XMLStreamException e) {
             result.setFailingException(e);
         }
-        if (store) store(xmp,result,key);
+        if (store) store(identifier,result);
         return result;
     }
 
     private byte [] extract (InputStream pdfFile) throws IOException {
         // copy in tmp (TODO very ugly)
-        File tmp = File.createTempFile("xemph-","-service");
+        File tmp = File.createTempFile("xemph-","-service",workingDir);
         try (FileOutputStream fos = new FileOutputStream(tmp)) {
             IOUtils.copy(pdfFile, fos);
             fos.close();
@@ -97,19 +106,31 @@ public class Application {
     }
 
 
-    private void store (byte [] content, ExtractionResult result, String key) throws IOException {
-        File resultDir = new File(storageDir,result.getIdentifier());
-        if (!resultDir.mkdir()) {
-            throw new IOException("Failed to create target directory: "+resultDir.getAbsolutePath());
-        }
-        try (FileOutputStream raw = new FileOutputStream(new File(resultDir,"raw.bin"))) {
-            IOUtils.write(content,raw);
+    private void store (String identifier,ExtractionResult result) throws IOException {
+        File resultDir = new File(storageDir,identifier);
+        if (!resultDir.exists()) {
+            if (!resultDir.mkdir()) {
+                throw new IOException("Failed to create target directory: "+resultDir.getAbsolutePath());
+            }
         }
         try (FileOutputStream res = new FileOutputStream(new File(resultDir,"result.json"))) {
             objectMapper().writeValue(res,result);
+            logger.info("Stored result for {}",identifier);
         }
-        logger.info("Storing in {} for key '{}'",result.getIdentifier(),key);
     }
 
+    private void storeRaw (String  identifier,byte [] content) throws IOException {
+        File resultDir = new File(storageDir,identifier);
+        if (!resultDir.exists()) {
+            if (!resultDir.mkdir()) {
+                throw new IOException("Failed to create target directory: "+resultDir.getAbsolutePath());
+            }
+        }
+        try (FileOutputStream raw = new FileOutputStream(new File(resultDir,"raw.bin"))) {
+            IOUtils.write(content,raw);
+            logger.info("Stored xmp block for {}",identifier);
+        }
+
+    }
 
 }
