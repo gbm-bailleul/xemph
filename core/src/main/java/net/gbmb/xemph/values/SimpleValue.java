@@ -38,6 +38,8 @@ public class SimpleValue extends Value {
 
     private static final String DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ssX";
 
+    public static final String UUID_PREFIX = "uuid:";
+
     private static ThreadLocal<SimpleDateFormat> dateFormater = new ThreadLocal<SimpleDateFormat>() {
         @Override
         public SimpleDateFormat initialValue() {
@@ -121,7 +123,7 @@ public class SimpleValue extends Value {
 
 
     public UUID asUUID () throws InvalidTypeConvertException {
-        if (content.startsWith("uuid:")) {
+        if (content.startsWith(UUID_PREFIX)) {
             return UUID.fromString(content.substring(5));
         } else {
             throw new InvalidTypeConvertException("Cannot convert to UUID: "+content);
@@ -169,7 +171,9 @@ public class SimpleValue extends Value {
         } else if (value instanceof Date) {
             return new SimpleValue(dateFormater.get().format((Date)value));
         } else if (value instanceof Calendar) {
-            return new SimpleValue(dateFormater.get().format(((Calendar)value).getTime()));
+            return new SimpleValue(dateFormater.get().format(((Calendar) value).getTime()));
+        } else if (value instanceof UUID) {
+            return new SimpleValue(UUID_PREFIX+((UUID)value).toString());
         } else {
             // default
             return new SimpleValue(value.toString());

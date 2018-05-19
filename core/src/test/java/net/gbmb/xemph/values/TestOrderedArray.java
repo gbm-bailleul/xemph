@@ -18,6 +18,9 @@
 package net.gbmb.xemph.values;
 
 import org.junit.Test;
+
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 
@@ -59,10 +62,29 @@ public class TestOrderedArray {
         assertEquals("value1",result.getItemAsSimpleValue(0).asString());
     }
 
+    @Test
+    public void testMultipleAdd () throws Exception {
+        String [] initials = new String [] { "value1", "value2", "value3", "value1"};
+        SimpleValue [] values = (SimpleValue [])Arrays.stream(initials).map(a -> new SimpleValue(a)).toArray(SimpleValue[]::new);
+
+        OrderedArray<SimpleValue> result = new OrderedArray<>();
+        result.addItems(values);
+        assertEquals(4,result.size());
+        assertEquals("value1",result.getItemAsSimpleValue(0).asString());
+    }
+
+
     @Test(expected = IllegalArgumentException.class)
     public void testParseWithNullElement () throws Exception {
         String [] initials = new String [] { "value1", null};
         OrderedArray<SimpleValue> result = OrderedArray.parse(initials);
+    }
+
+    @Test
+    public void testStringRepresentation () throws Exception {
+        init();
+        String s = array.toString();
+        assertEquals("[ value1, value2, value3 ]",s);
     }
 
 }

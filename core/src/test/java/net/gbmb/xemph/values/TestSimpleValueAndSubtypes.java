@@ -17,11 +17,13 @@
 
 package net.gbmb.xemph.values;
 
+import net.gbmb.xemph.InvalidTypeConvertException;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -115,6 +117,23 @@ public class TestSimpleValueAndSubtypes {
         assertEquals(string,sv1.toString());
         assertEquals(string,sv1.asString());
         assertEquals(date,sv1.asDate().getTime());
+    }
+
+    @Test
+    public void testUUID () throws Exception {
+        UUID uuid = UUID.randomUUID();
+        SimpleValue sv = SimpleValue.parse(uuid);
+        assertEquals(SimpleValue.UUID_PREFIX+uuid.toString(),sv.getContent());
+        assertEquals(uuid,sv.asUUID());
+    }
+
+    @Test(expected = InvalidTypeConvertException.class)
+    public void testInvalidUUID () throws Exception {
+        UUID uuid = UUID.randomUUID();
+        SimpleValue sv = SimpleValue.parse(uuid.toString());
+        sv.asUUID();
+//        assertEquals(SimpleValue.UUID_PREFIX+uuid.toString(),sv.getContent());
+//        assertEquals(uuid,sv.asUUID());
     }
 
 

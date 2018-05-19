@@ -31,7 +31,9 @@ public class AlternativeArray<T extends Value> extends ArrayValue<T> {
     private Map<String,T> langMap = new HashMap<>();
 
     public void addItem (T item) {
-        langMap.put(item.getXmlLang(),item);
+        String lang = item.getXmlLang();
+        if (lang==null) lang = "x-default";
+        langMap.put(lang,item);
         super.addItem(item);
     }
 

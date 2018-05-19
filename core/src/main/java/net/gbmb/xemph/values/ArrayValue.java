@@ -54,7 +54,8 @@ public abstract class ArrayValue<T extends Value> extends Value {
             sb.append(i);
             sb.append(", ");
         });
-        sb.replace(sb.length()-2,sb.length()," ]");
+        sb.setCharAt(sb.length()-2,' ');
+        sb.setCharAt(sb.length()-1,']');
         return sb.toString();
     }
 
