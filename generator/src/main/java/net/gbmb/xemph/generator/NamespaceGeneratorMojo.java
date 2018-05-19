@@ -115,6 +115,8 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
         PackageClass cls = unit.newClass(ns.getClassname());
         cls.addImport("net.gbmb.xemph.Namespace");
         cls.addImport("net.gbmb.xemph.Name");
+        cls.addImport("net.gbmb.xemph.Value");
+        cls.addImport("net.gbmb.xemph.Packet");
         cls.addImport("net.gbmb.xemph.values.*");
         cls.addImport("net.gbmb.xemph.namespaces.*");
         cls.setExtends("Namespace");
@@ -156,16 +158,43 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
             field1.setAccess(Access.AccessType.PUBLIC);
             field1.setExpression(vm.newFree("new Name(NAMESPACE_URI,\""+property.getName()+"\")"));
             // type
-            String ifStmt = String.format("else if (%s.getLocalName().equals(propertyName)) return %s",getUpperPropertyName(property.getName()),getTypeClass(property.getType()));
+            String ifStmt = String.format("else if (%s.getLocalName().equals(propertyName)) return %s",getUpperPropertyName(property.getName()),getTypeClass(property.getType())+".class");
             getPropertyType.newStmt(vm.newFree(ifStmt));
         }
 
         getPropertyType.newStmt(vm.newFree("else return null"));
 
 
+        for (Property property:ns.getProperties()) {
+            generateGetter(vm,cls,property);
+            generateContains(vm,cls,property);
+        }
+
         unit.encode();
 
     }
+
+    private void generateGetter (VirtualMachine vm, PackageClass cls,Property property) throws MojoExecutionException {
+        ClassMethod getMethod = cls.newMethod(
+                vm.newType(getTypeClass(property.getType())),
+                "get"+getPropertyNameForMethod(property.getName()));
+        getMethod.setAccess(Access.AccessType.PUBLIC);
+        getMethod.isStatic(true);
+        getMethod.addParameter(vm.newType("Packet"), "packet");
+        getMethod.newStmt(vm.newFree("return ("+getTypeClass(property.getType())+")packet.getValue("+getUpperPropertyName(property.getName())+")"));
+    }
+
+    private void generateContains (VirtualMachine vm, PackageClass cls,Property property) throws MojoExecutionException {
+        ClassMethod getMethod = cls.newMethod(
+                vm.newType("boolean"),
+                "contains"+getPropertyNameForMethod(property.getName()));
+        getMethod.setAccess(Access.AccessType.PUBLIC);
+        getMethod.isStatic(true);
+        getMethod.addParameter(vm.newType("Packet"), "packet");
+        getMethod.newReturn().setExpression(vm.newFree("packet.contains("+getUpperPropertyName(property.getName())+")"));
+    }
+
+
 
     private String getTypeClass (String typeName) throws MojoExecutionException {
         switch (typeName) {
@@ -185,19 +214,17 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
             case "Part":
             case "GUID":
             case "ProperName":
-                return "SimpleValue.class";
+                return "SimpleValue";
             case "Unordered":
-                return "UnorderedArray.class";
+                return "UnorderedArray";
             case "Ordered":
-                return "OrderedArray.class";
+                return "OrderedArray";
             case "LangAlternative":
-                return "AlternativeArray.class";
+                return "AlternativeArray";
             case "Dimensions":
-                return "Dimensions.class";
             case "ResourceRef":
-                return "ResourceRef.class";
             case "ResourceEvent":
-                return "ResourceEvent.class";
+                return "Structure";
             default:
                 throw new MojoExecutionException("Unknown type: " + typeName);
         }
@@ -218,6 +245,13 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
         if (tmp.endsWith("_I_D"))
             tmp =tmp.substring(0,tmp.length()-3)+"ID";
         return tmp;
+    }
+
+    private String getPropertyNameForMethod (String propertyName) {
+        StringBuilder sb = new StringBuilder(propertyName.length());
+        sb.append(propertyName.substring(0,1).toUpperCase());
+        sb.append(propertyName.substring(1));
+        return sb.toString();
     }
 
 }

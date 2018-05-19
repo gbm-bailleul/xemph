@@ -21,6 +21,7 @@ import net.gbmb.xemph.Value;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Alternative array wrapper
@@ -36,6 +37,10 @@ public class AlternativeArray<T extends Value> extends ArrayValue<T> {
 
     public T getValue(String lang) {
         return langMap.get(lang);
+    }
+
+    public Set<String> getAlternativeKeySet() {
+        return langMap.keySet();
     }
 
 }

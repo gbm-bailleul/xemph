@@ -19,8 +19,11 @@ package net.gbmb.xemph.examples;
 import net.gbmb.xemph.Name;
 import net.gbmb.xemph.Packet;
 import net.gbmb.xemph.Value;
+import net.gbmb.xemph.namespaces.DublinCore;
 import net.gbmb.xemph.namespaces.Xmp;
 import net.gbmb.xemph.namespaces.XmpMM;
+import net.gbmb.xemph.values.AlternativeArray;
+import net.gbmb.xemph.values.OrderedArray;
 import net.gbmb.xemph.xml.XmpReader;
 import org.apache.pdfbox.io.RandomAccessFile;
 import org.apache.pdfbox.pdfparser.PDFParser;
@@ -53,5 +56,19 @@ public class PDFExtractor {
         System.out.println();
         System.out.println(packet.getSimpleValue(XmpMM.INSTANCE_ID));
         System.out.println(packet.getSimpleValue(XmpMM.INSTANCE_ID).asUUID());
+
+        OrderedArray<Value> creators = DublinCore.getCreator(packet);
+        for (Value sv : creators.getItems()) {
+            System.out.println(">> "+sv.getClass().getSimpleName()+" : "+sv.toString());
+        }
+
+
+        System.out.println("Contains DC:title = "+DublinCore.containsTitle(packet));
+        System.out.println("Contains DC:title = "+ packet.contains(DublinCore.TITLE));
+        AlternativeArray<Value> title = DublinCore.getTitle(packet);
+
+        for (String key : title.getAlternativeKeySet()) {
+            System.out.println(">> "+key+" : "+title.getValue(key));
+        }
     }
 }
