@@ -18,12 +18,14 @@ import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import javax.xml.stream.XMLStreamException;
 import java.io.*;
 import java.util.UUID;
 
 @Controller
 @EnableAutoConfiguration
+@Component
 public class Application {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -35,10 +37,12 @@ public class Application {
         return mapper;
     }
 
-    @Value("${storage.dir:/tmp}")
+    @Value("${storage.dir}")
+    @NotNull
     private File storageDir;
 
-    @Value("${working.dir:/tmp}")
+    @Value("${working.dir}")
+    @NotNull
     private File workingDir;
 
     @RequestMapping("/")
