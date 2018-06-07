@@ -9,6 +9,9 @@
 This project is just a new XMP parser. It has been inspired of the xmpbox module in Apache PDFBox project. 
 On the contrary of Xmpbox, I did not try keep compatibility with the Jempbox.
 
+Most of the namespaces described in the XMP specification are implemented. Namespaces helpers are generated from a 
+configuration file. It is possible to create new namespaces with a simple configuration file and using the xemph generator plugin for maven..
+
 ## Example
 
 Here are some examples based on PDFBox
@@ -72,6 +75,9 @@ metadata.importXMPMetadata(xmpContent);
 document.getDocumentCatalog().setMetadata(metadata);
 document.save("example.pdf");
 ```
+
+
+
 
 ## Format
 
