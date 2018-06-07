@@ -39,23 +39,26 @@ import java.util.Map;
 public class PDFExtractor {
 
     public static void main (String [] args ) throws Exception {
+        // open PDF file
         File input = new File ("files/XMPSpecificationPart1.pdf");
         RandomAccessFile raf = new RandomAccessFile(input,"r");
         PDFParser parser = new PDFParser(raf);
         parser.parse();
         PDDocument document = parser.getPDDocument();
+
+        // retrieve serialized xmp from document catalog
         InputStream inputstream = document.getDocumentCatalog().getMetadata().exportXMPMetadata();
-//        IOUtils.copy(inputstream,System.out);
+
+        // deserialize
         XmpReader xmpReader = new XmpReader();
         Packet packet = xmpReader.parse(inputstream);
+
+        // display
         for (Map.Entry<Name,Value> entry: packet.getProperties().entrySet()) {
             System.out.println(entry.getKey()+" : "+entry.getValue().getClass()+" / "+entry.getValue());
         }
-        System.out.println(packet.getSimpleValue(Xmp.METADATA_DATE));
-        System.out.println(packet.getSimpleValue(Xmp.METADATA_DATE).asDate().getTime());
-        System.out.println();
-        System.out.println(packet.getSimpleValue(XmpMM.INSTANCE_ID));
-        System.out.println(packet.getSimpleValue(XmpMM.INSTANCE_ID).asUUID());
+        System.out.println(Xmp.getMetadataDate(packet).asDate().getTime());
+        System.out.println(XmpMM.getInstanceID(packet).asUUID());
 
         OrderedArray<Value> creators = DublinCore.getCreator(packet);
         for (Value sv : creators.getItems()) {
@@ -64,11 +67,5 @@ public class PDFExtractor {
 
 
         System.out.println("Contains DC:title = "+DublinCore.containsTitle(packet));
-        System.out.println("Contains DC:title = "+ packet.contains(DublinCore.TITLE));
-        AlternativeArray<Value> title = DublinCore.getTitle(packet);
-
-        for (String key : title.getAlternativeKeySet()) {
-            System.out.println(">> "+key+" : "+title.getValue(key));
-        }
     }
 }

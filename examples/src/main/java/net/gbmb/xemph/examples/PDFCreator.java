@@ -49,7 +49,7 @@ public class PDFCreator {
         metadata.importXMPMetadata(xmpContent);
         document.getDocumentCatalog().setMetadata(metadata);
 
-        document.save("target/example.pdf");
+        document.save("example.pdf");
 
     }
 }
