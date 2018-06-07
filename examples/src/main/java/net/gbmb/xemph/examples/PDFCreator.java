@@ -37,9 +37,10 @@ public class PDFCreator {
         document.addPage( blankPage );
 
         Packet packet = new Packet();
-        packet.addProperty(DublinCore.CREATOR,"Guillaume Bailleul");
+        DublinCore.setCreator(packet,"Guillaume Bailleul");
+        // There is no helper for this one
         packet.addProperty(DublinCore.DATE, new Date());
-        packet.addProperty(DublinCore.PUBLISHER, UnorderedArray.parse("publisher1","publisher2","publisher3","publisher4"));
+        DublinCore.setPublisher(packet,UnorderedArray.parse("publisher1","publisher2","publisher3","publisher4"));
 
         XmpWriter writer = new XmpWriter();
         byte [] xmpContent = writer.write(packet);

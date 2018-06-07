@@ -168,6 +168,7 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
         for (Property property:ns.getProperties()) {
             generateGetter(vm,cls,property);
             generateContains(vm,cls,property);
+            generateSetter(vm,cls,property);
         }
 
         unit.encode();
@@ -194,6 +195,45 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
         getMethod.newReturn().setExpression(vm.newFree("packet.contains("+getUpperPropertyName(property.getName())+")"));
     }
 
+    private void generateSetter (VirtualMachine vm, PackageClass cls,Property property) throws MojoExecutionException {
+        ClassMethod setMethod = cls.newMethod(
+                "set"+getPropertyNameForMethod(property.getName()));
+        setMethod.setAccess(Access.AccessType.PUBLIC);
+        setMethod.isStatic(true);
+        setMethod.addParameter(vm.newType("Packet"), "packet");
+        String propertyClass = getTypeClass(property.getType());
+        setMethod.addParameter(vm.newType(propertyClass), "value");
+        setMethod.newStmt(vm.newFree("packet.addProperty("+getUpperPropertyName(property.getName())+",value)"));
+        // generate string setter if property is simple value
+        if (propertyClass.equals("SimpleValue")) {
+            generateSetterFromString(vm,cls,property);
+        }
+        // generate string setter for array
+        if (propertyClass.equals("UnorderedArray") || propertyClass.equals("OrderedArray")) {
+            generateArraySetterWithOne(vm,cls,property);
+        }
+    }
+
+    private void generateSetterFromString(VirtualMachine vm, PackageClass cls, Property property) throws MojoExecutionException {
+        ClassMethod setMethod = cls.newMethod(
+                "set"+getPropertyNameForMethod(property.getName()));
+        setMethod.setAccess(Access.AccessType.PUBLIC);
+        setMethod.isStatic(true);
+        setMethod.addParameter(vm.newType("Packet"), "packet");
+        setMethod.addParameter(vm.newType("String"), "value");
+        setMethod.newStmt(vm.newFree("SimpleValue simple = SimpleValue.parse(value)"));
+        setMethod.newStmt(vm.newFree("packet.addProperty("+getUpperPropertyName(property.getName())+",simple)"));
+    }
+
+    private void generateArraySetterWithOne(VirtualMachine vm, PackageClass cls, Property property) throws MojoExecutionException {
+        ClassMethod setMethod = cls.newMethod(
+                "set"+getPropertyNameForMethod(property.getName()));
+        setMethod.setAccess(Access.AccessType.PUBLIC);
+        setMethod.isStatic(true);
+        setMethod.addParameter(vm.newType("Packet"), "packet");
+        setMethod.addParameter(vm.newType("String"), "value");
+        setMethod.newStmt(vm.newFree("packet.addProperty("+getUpperPropertyName(property.getName())+","+getTypeClass(property.getType())+".parse(value))"));
+    }
 
 
     private String getTypeClass (String typeName) throws MojoExecutionException {
