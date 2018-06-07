@@ -1,8 +1,0 @@
-* XmlWriter able to write human readable
-* implement Video media value types (part 2 1.2.6)
-* implement EXIF media value types (part 2 1.2.7)
-* implement XMP Dynamic Media namespace (part 2 2.7)
-* implement Photoshop namespaces (part 2 3.2)
-* implement Camera Raw namespaces (part 2 3.3)
-* implement Exif namespaces (part 2 3.4)
-* how to implement internal notion ? impact on product ?
