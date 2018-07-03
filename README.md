@@ -12,7 +12,7 @@ On the contrary of Xmpbox, I did not try keep compatibility with the Jempbox.
 Most of the namespaces described in the XMP specification are implemented. Namespaces helpers are generated from a 
 configuration file. It is possible to create new namespaces with a simple configuration file and using the xemph generator plugin for maven..
 
-## Example
+## Examples
 
 Here are some examples based on PDFBox
 
@@ -76,8 +76,61 @@ document.getDocumentCatalog().setMetadata(metadata);
 document.save("example.pdf");
 ```
 
+### Creating a specific namespace
 
+Current namespaces are defined in yaml files (see core/namespaces). 
 
+It is possible to generate new namespaces with a simple yaml file and with a maven plugin. Here is an example
+of namespace; default prefix will be **ec**, its url will be **http://example.com/my_ns/1.0** and it will have
+5 properties (yes this is an extract of Dublin Core).
+
+```yaml
+default-prefix: ec
+uri: http://example.com/my_ns/1.0
+classname: ExampleNamespace
+properties:
+  - name: contributor
+    type: Unordered
+    element: Text
+  - name: coverage
+    type: Text
+  - name: creator
+    type: Ordered
+    element: ProperName
+  - name: date
+    type: Ordered
+    element: Date
+  - name: description
+    type: LangAlternative
+```
+
+In your project pom, add this maven plugin:
+
+```xml
+<build>
+        <plugins>
+        ...
+            <plugin>
+                <groupId>xemph</groupId>
+                <artifactId>generator</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>genNamespaces</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>com.example.namespaces</packageName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+         ...
+        </plugins>
+    </build>
+```
+
+The classes will be generated in *target/generated-sources/namespaces*
 
 ## Format
 
