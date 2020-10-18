@@ -4,7 +4,8 @@ jdk:
   - openjdk8
   - openjdk11
 
-script: "mvn cobertura:cobertura"
+# no corpus testing on travis
+script: "mvn -pl -xemph:corpus-testing verify"
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
