@@ -31,7 +31,7 @@
     <packaging>maven-plugin</packaging>
 
     <properties>
-        <jackson.version>2.10.3</jackson.version>
+        <jackson.version>2.12.6.1</jackson.version>
     </properties>
 
     <dependencies>
