@@ -31,6 +31,22 @@ public class TestXmlWriter {
         return reader.parse(new ByteArrayInputStream(output.toByteArray()));
     }
 
+    @Test
+    public void testWriterConfiguration () {
+        XmlWriter writer = new XmlWriter();
+        // indent
+        assertFalse(writer.isIndent());
+        writer.setIsIndent(true);
+        assertTrue(writer.isIndent());
+        // simple value as attribute
+        assertFalse(writer.isSimpleValueAsAttribute());
+        writer.setSimpleValueAsAttribute(true);
+        assertTrue(writer.isSimpleValueAsAttribute());
+        // group rdf description
+        assertTrue(writer.isGroupRdfDescription());
+        writer.setGroupRdfDescription(false);
+        assertFalse(writer.isGroupRdfDescription());
+    }
 
     @Test
     public void writeEmptyDefinition () throws Exception {

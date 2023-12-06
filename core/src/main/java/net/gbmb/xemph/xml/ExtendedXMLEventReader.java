@@ -41,25 +41,6 @@ class ExtendedXMLEventReader implements XMLEventReader {
         return next;
     }
 
-    public XMLEvent peekNextTag() throws XMLStreamException {
-        XMLEvent event = peek();
-        while (!(event instanceof StartElement) && !(event instanceof EndElement)) {
-            if (event instanceof Characters) {
-                String data = event.asCharacters().getData();
-                if (((Characters) event).isWhiteSpace()) {
-                  nextEvent();
-                  event = peek();
-                } else
-                    throw new XMLStreamException("Next element is not a tag");
-            } else if (event instanceof Comment) {
-                nextEvent();
-                event = peek();
-            } else // found something different than tag
-                throw new XMLStreamException("Next element is not a tag : "+event);
-        }
-        return event;
-    }
-
 
     @Override
     public XMLEvent nextEvent() throws XMLStreamException {
