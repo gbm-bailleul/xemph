@@ -1,8 +1,9 @@
 language: java
 
 jdk:
-  - openjdk8
-  - openjdk11
+  - openjdk17
+#  - openjdk8
+#  - openjdk11
 
 # no corpus testing on travis
 script: "mvn -pl -xemph:corpus-testing verify"

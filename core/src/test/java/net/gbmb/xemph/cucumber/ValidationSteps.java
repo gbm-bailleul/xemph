@@ -1,9 +1,9 @@
 package net.gbmb.xemph.cucumber;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import io.cucumber.java.After;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import net.gbmb.xemph.Name;
 import net.gbmb.xemph.Packet;
 import net.gbmb.xemph.Value;
@@ -35,7 +35,7 @@ public class ValidationSteps {
     @After
     public void after(Scenario scenario) {
         System.out.println();
-        System.out.printf(xmlToParse);
+        System.out.printf(xmlToParse==null?"NULL":xmlToParse);
         System.out.println();
         System.out.println(scenario.getName() + " Status - " + scenario.getStatus());
         System.out.println("------------------------------");

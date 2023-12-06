@@ -1,8 +1,8 @@
 package net.gbmb.xemph.cucumber;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.Given;
 import net.gbmb.xemph.Namespaces;
 import org.w3c.dom.Element;
 
