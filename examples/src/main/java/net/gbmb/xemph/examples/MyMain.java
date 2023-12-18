@@ -26,11 +26,16 @@ import net.gbmb.xemph.namespaces.XmpTPg;
 import net.gbmb.xemph.values.*;
 import net.gbmb.xemph.xml.XmlWriter;
 
-import java.io.IOException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
 
 public class MyMain {
 
-    public static void main (String [] args) throws IOException {
+    public static void main (String [] args) throws Exception {
         Packet packet = new Packet();
         packet.addProperty(new Name(Xmp.NAMESPACE_URI,"BaseURL"),new SimpleValue("http://www.adobe.com/"));
 
@@ -74,11 +79,27 @@ public class MyMain {
         v2.addQualifier(new Name("http://ns.adobe.com/xmp-example/","qualifier"),"artificial example");
         subject.addItem(v2);
 
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
         XmlWriter writer = new XmlWriter();
         writer.setIsIndent(true);
         writer.setSimpleValueAsAttribute(false);
-        writer.write(packet,System.out);
+        writer.write(packet,bos);
         System.out.flush();
+
+        bos.close();
+
+        TransformerFactory factory = TransformerFactory.newInstance();
+
+        Transformer transformer = factory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
+        StringWriter formattedStringWriter = new StringWriter();
+        transformer.transform(new StreamSource(new ByteArrayInputStream(bos.toByteArray())), new StreamResult(formattedStringWriter));
+        System.out.println(formattedStringWriter);
+
+
 
     }
 }

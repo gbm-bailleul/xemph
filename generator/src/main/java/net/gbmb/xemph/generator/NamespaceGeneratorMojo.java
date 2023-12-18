@@ -19,8 +19,7 @@ package net.gbmb.xemph.generator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import net.sourceforge.jenesis4java.*;
-import net.sourceforge.jenesis4java.jaloppy.JenesisJalopyEncoder;
+import com.squareup.javapoet.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -28,12 +27,12 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
+import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
 /**
- * see http://jenesis4java.sourceforge.net/index.html
  * @goal genNamespaces
  * @phase generate-sources
  * @description generate the java source code of namespaces
@@ -104,135 +103,116 @@ public class NamespaceGeneratorMojo extends AbstractMojo {
 
     private void generate (File file) throws IOException, MojoExecutionException {
         log.warn("Generating: "+file.getPath());
-        System.setProperty("jenesis.encoder", JenesisJalopyEncoder.class.getName());
-        VirtualMachine vm = VirtualMachine.getVirtualMachine();
-        CompilationUnit unit = vm.newCompilationUnit(this.outputJavaDirectory.getAbsolutePath());
-        unit.setNamespace(packageName);
-
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         Namespace ns = mapper.readValue(file,Namespace.class);
 
-        PackageClass cls = unit.newClass(ns.getClassname());
-        cls.addImport("net.gbmb.xemph.Namespace");
-        cls.addImport("net.gbmb.xemph.Name");
-        cls.addImport("net.gbmb.xemph.Value");
-        cls.addImport("net.gbmb.xemph.Packet");
-        cls.addImport("net.gbmb.xemph.values.*");
-        cls.addImport("net.gbmb.xemph.namespaces.*");
-        cls.setExtends("Namespace");
-        cls.setAccess(Access.AccessType.PUBLIC);
-
-        ClassField defaultPrefix = cls.newField(String.class,"DEFAULT_PREFIX");
-        defaultPrefix.setAccess(Access.AccessType.PUBLIC);
-        defaultPrefix.isStatic(true);
-        defaultPrefix.isFinal(true);
-        defaultPrefix.setExpression(vm.newString(ns.getDefaultPrefix()));
-
-        ClassMethod getDefaultPrefix = cls.newMethod(vm.newType(String.class),"getDefaultPrefix");
-        getDefaultPrefix.setAccess(Access.AccessType.PUBLIC);
-        getDefaultPrefix.newReturn().setExpression(vm.newVar("DEFAULT_PREFIX"));
-        getDefaultPrefix.addAnnotation(vm.newAnnotation(Override.class));
-
-        ClassField namespaceURI = cls.newField(String.class,"NAMESPACE_URI");
-        namespaceURI.setAccess(Access.AccessType.PUBLIC);
-        namespaceURI.isStatic(true);
-        namespaceURI.isFinal(true);
-        namespaceURI.setExpression(vm.newString(ns.getUri()));
-
-        ClassMethod getNamespaceURI = cls.newMethod(vm.newType(String.class),"getNamespaceURI");
-        getNamespaceURI.setAccess(Access.AccessType.PUBLIC);
-        getNamespaceURI.newReturn().setExpression(vm.newVar("NAMESPACE_URI"));
-        getNamespaceURI.addAnnotation(vm.newAnnotation(Override.class));
-
-        ClassMethod getPropertyType = cls.newMethod(vm.newType(Class.class), "getPropertyType");
-        getPropertyType.addParameter(String.class, "propertyName");
-        getPropertyType.setAccess(Access.AccessType.PUBLIC);
-        getPropertyType.addAnnotation(vm.newAnnotation(Override.class));
-        getPropertyType.newStmt(vm.newFree("if (propertyName==null) return null"));
-
+        TypeSpec.Builder clsBuilder = TypeSpec.classBuilder(ns.getClassname());
+        clsBuilder.addModifiers(Modifier.PUBLIC);
+        clsBuilder.superclass(ClassName.get("net.gbmb.xemph","Namespace"));
+        clsBuilder.addField(
+                FieldSpec.builder(String.class, "DEFAULT_PREFIX",
+                                Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                        .initializer("\"" + ns.getDefaultPrefix() + "\"").build());
+        clsBuilder.addMethod(MethodSpec.methodBuilder("getDefaultPrefix")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(String.class)
+                .addAnnotation(Override.class)
+                .addStatement("return DEFAULT_PREFIX").build());
+        clsBuilder.addField(
+                FieldSpec.builder(String.class, "NAMESPACE_URI",
+                                Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                        .initializer("\"" + ns.getUri() + "\"").build());
+        clsBuilder.addMethod(MethodSpec.methodBuilder("getNamespaceURI")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(String.class)
+                .addAnnotation(Override.class)
+                .addStatement("return NAMESPACE_URI").build());
+        MethodSpec.Builder getPropertyTypeBuilder = MethodSpec.methodBuilder("getPropertyType")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(Class.class)
+                .addAnnotation(Override.class)
+                .addParameter(String.class,"propertyName")
+                .addStatement("if (propertyName==null) return null");
         for (Property property:ns.getProperties()) {
             // create field
-            ClassField field1 = cls.newField(vm.newType("Name"),getUpperPropertyName(property.getName()));
-            field1.isStatic(true);
-            field1.isFinal(true);
-            field1.setAccess(Access.AccessType.PUBLIC);
-            field1.setExpression(vm.newFree("new Name(NAMESPACE_URI,\""+property.getName()+"\")"));
+            clsBuilder.addField(
+                    FieldSpec.builder(ClassName.get("net.gbmb.xemph","Name"), getUpperPropertyName(property.getName()),
+                                    Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                            .initializer("new Name(NAMESPACE_URI,\""+property.getName()+"\")").build());
             // type
-            String ifStmt = String.format("else if (%s.getLocalName().equals(propertyName)) return %s",getUpperPropertyName(property.getName()),getTypeClass(property.getType())+".class");
-            getPropertyType.newStmt(vm.newFree(ifStmt));
+            String ifStmt = String.format("else if (%s.getLocalName().equals(propertyName)) return $T.class",getUpperPropertyName(property.getName()));
+            getPropertyTypeBuilder.addStatement(ifStmt,ClassName.get("net.gbmb.xemph.values",getTypeClass(property.getType())));
         }
 
-        getPropertyType.newStmt(vm.newFree("else return null"));
-
+        getPropertyTypeBuilder.addStatement("else return null");
+        clsBuilder.addMethod(getPropertyTypeBuilder.build());
 
         for (Property property:ns.getProperties()) {
-            generateGetter(vm,cls,property);
-            generateContains(vm,cls,property);
-            generateSetter(vm,cls,property);
+            generateGetter(clsBuilder,property);
+            generateContains(clsBuilder,property);
+            generateSetter(clsBuilder,property);
         }
 
-        unit.encode();
+        TypeSpec cls = clsBuilder.build();
+        JavaFile jf = JavaFile.builder(packageName,cls)
+                .indent("    ")
+                .build();
+        jf.writeToFile(new File(this.outputJavaDirectory.getAbsolutePath()));
 
     }
 
-    private void generateGetter (VirtualMachine vm, PackageClass cls,Property property) throws MojoExecutionException {
-        ClassMethod getMethod = cls.newMethod(
-                vm.newType(getTypeClass(property.getType())),
-                "get"+getPropertyNameForMethod(property.getName()));
-        getMethod.setAccess(Access.AccessType.PUBLIC);
-        getMethod.isStatic(true);
-        getMethod.addParameter(vm.newType("Packet"), "packet");
-        getMethod.newStmt(vm.newFree("return ("+getTypeClass(property.getType())+")packet.getValue("+getUpperPropertyName(property.getName())+")"));
+    private void generateGetter (TypeSpec.Builder cls,Property property) throws MojoExecutionException {
+        MethodSpec.Builder getter = MethodSpec.methodBuilder("get"+getPropertyNameForMethod(property.getName()))
+                .addModifiers(Modifier.PUBLIC,Modifier.STATIC)
+                .returns(ClassName.get("net.gbmb.xemph.values",getTypeClass(property.getType())))
+                .addParameter(ClassName.get("net.gbmb.xemph","Packet"),"packet")
+                .addStatement("return ("+getTypeClass(property.getType())+")packet.getValue("+getUpperPropertyName(property.getName())+")");
+        cls.addMethod(getter.build());
     }
 
-    private void generateContains (VirtualMachine vm, PackageClass cls,Property property) throws MojoExecutionException {
-        ClassMethod getMethod = cls.newMethod(
-                vm.newType("boolean"),
-                "contains"+getPropertyNameForMethod(property.getName()));
-        getMethod.setAccess(Access.AccessType.PUBLIC);
-        getMethod.isStatic(true);
-        getMethod.addParameter(vm.newType("Packet"), "packet");
-        getMethod.newReturn().setExpression(vm.newFree("packet.contains("+getUpperPropertyName(property.getName())+")"));
+    private void generateContains (TypeSpec.Builder cls,Property property) throws MojoExecutionException {
+        MethodSpec.Builder contains = MethodSpec.methodBuilder("contains"+getPropertyNameForMethod(property.getName()))
+                .addModifiers(Modifier.PUBLIC,Modifier.STATIC)
+                .returns(boolean.class)
+                .addParameter(ClassName.get("net.gbmb.xemph","Packet"),"packet")
+                .addStatement("return packet.contains("+getUpperPropertyName(property.getName())+")");
+        cls.addMethod(contains.build());
     }
 
-    private void generateSetter (VirtualMachine vm, PackageClass cls,Property property) throws MojoExecutionException {
-        ClassMethod setMethod = cls.newMethod(
-                "set"+getPropertyNameForMethod(property.getName()));
-        setMethod.setAccess(Access.AccessType.PUBLIC);
-        setMethod.isStatic(true);
-        setMethod.addParameter(vm.newType("Packet"), "packet");
+    private void generateSetter (TypeSpec.Builder cls,Property property) throws MojoExecutionException {
         String propertyClass = getTypeClass(property.getType());
-        setMethod.addParameter(vm.newType(propertyClass), "value");
-        setMethod.newStmt(vm.newFree("packet.addProperty("+getUpperPropertyName(property.getName())+",value)"));
-        // generate string setter if property is simple value
+        MethodSpec.Builder setter = MethodSpec.methodBuilder("set"+getPropertyNameForMethod(property.getName()))
+                .addModifiers(Modifier.PUBLIC,Modifier.STATIC)
+                .addParameter(ClassName.get("net.gbmb.xemph","Packet"),"packet")
+                .addParameter(ClassName.get("net.gbmb.xemph.values",propertyClass),"value")
+                .addStatement("packet.addProperty("+getUpperPropertyName(property.getName())+",value)");
+        cls.addMethod(setter.build());
         if (propertyClass.equals("SimpleValue")) {
-            generateSetterFromString(vm,cls,property);
+            generateSetterFromString(cls,property);
         }
         // generate string setter for array
         if (propertyClass.equals("UnorderedArray") || propertyClass.equals("OrderedArray")) {
-            generateArraySetterWithOne(vm,cls,property);
+            generateArraySetterWithOne(cls,property);
         }
     }
 
-    private void generateSetterFromString(VirtualMachine vm, PackageClass cls, Property property) throws MojoExecutionException {
-        ClassMethod setMethod = cls.newMethod(
-                "set"+getPropertyNameForMethod(property.getName()));
-        setMethod.setAccess(Access.AccessType.PUBLIC);
-        setMethod.isStatic(true);
-        setMethod.addParameter(vm.newType("Packet"), "packet");
-        setMethod.addParameter(vm.newType("String"), "value");
-        setMethod.newStmt(vm.newFree("SimpleValue simple = SimpleValue.parse(value)"));
-        setMethod.newStmt(vm.newFree("packet.addProperty("+getUpperPropertyName(property.getName())+",simple)"));
+    private void generateSetterFromString(TypeSpec.Builder cls, Property property) throws MojoExecutionException {
+        MethodSpec.Builder setter = MethodSpec.methodBuilder("set"+getPropertyNameForMethod(property.getName()))
+                .addModifiers(Modifier.PUBLIC,Modifier.STATIC)
+                .addParameter(ClassName.get("net.gbmb.xemph","Packet"),"packet")
+                .addParameter(String.class,"value")
+                .addStatement("SimpleValue simple = SimpleValue.parse(value)")
+                .addStatement("packet.addProperty("+getUpperPropertyName(property.getName())+",simple)");
+        cls.addMethod(setter.build());
     }
 
-    private void generateArraySetterWithOne(VirtualMachine vm, PackageClass cls, Property property) throws MojoExecutionException {
-        ClassMethod setMethod = cls.newMethod(
-                "set"+getPropertyNameForMethod(property.getName()));
-        setMethod.setAccess(Access.AccessType.PUBLIC);
-        setMethod.isStatic(true);
-        setMethod.addParameter(vm.newType("Packet"), "packet");
-        setMethod.addParameter(vm.newType("String"), "value");
-        setMethod.newStmt(vm.newFree("packet.addProperty("+getUpperPropertyName(property.getName())+","+getTypeClass(property.getType())+".parse(value))"));
+    private void generateArraySetterWithOne(TypeSpec.Builder cls, Property property) throws MojoExecutionException {
+        MethodSpec.Builder setter = MethodSpec.methodBuilder("set"+getPropertyNameForMethod(property.getName()))
+                .addModifiers(Modifier.PUBLIC,Modifier.STATIC)
+                .addParameter(ClassName.get("net.gbmb.xemph","Packet"),"packet")
+                .addParameter(String.class,"value")
+                .addStatement("packet.addProperty("+getUpperPropertyName(property.getName())+","+getTypeClass(property.getType())+".parse(value))");
+        cls.addMethod(setter.build());
     }
 
 
